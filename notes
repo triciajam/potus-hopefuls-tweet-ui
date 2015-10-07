@@ -1,0 +1,36 @@
+Common Python Steps
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-common-steps.html
+Deploy FLask and Elastic Beanstalk
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-flask.html
+
+Installed pip, vituralenv
+Crested virtualenv for this project
+activated it
+. venv/bin/activate
+
+brew install mongodb
+NOTE: could not run 'brew update' -- it just hangs.  Can not figure out why.  Also brew doctor gives lots of warnings.  But mongodb install seemed to work
+pip install pymongo
+
+mongod --dbpath /Users/triciajam/Documents/Projects/twit-candi-ui/data
+
+aws s3 sync s3://twit-candi-2016/data data/ --exclude "*" --include "*201510*" --dryrun
+
+NOTE: du -sh "folder" - S is summary, H is human readbable
+
+files=`for f in data/*/*/*; do echo $f; done`
+files=`for f in data/20151001/*/*; do echo $f; done`
+for f in ${files[@]}; do echo $f; done
+
+for f in ${files[@]}; do mongoimport -d twit-candi -c tweets --type json --file $f; done
+
+In mongodb shell
+db.tweets.findOne({}, {text:1, tc_cand:1, tc_cat:1, tc_text:1, created_at:1, place:1, geo:1, coordinates:1, hashtags:1} )
+
+
+git@github.com:adilmoujahid/DonorsChoose_Visualization.git/static
+
+var format = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
+alert(format.parse("2011-07-01T19:15:28Z"));
+
+FIELDS = {'text': True, 'tc_cand': True, 'tc_cat': True, 'tc_text': True, 'tc_date': True, 'created_at': True, 'place': True, 'geo': True, 'coordinates': True, 'hashtags': True}
