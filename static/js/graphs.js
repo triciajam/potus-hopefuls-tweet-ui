@@ -139,14 +139,14 @@ function makeGraphs(error, tweetsJson) {
     .width(1000)
     .height(250)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
-    .chart(function(c) { return dc.lineChart(c).interpolate('basis'); })
+    .chart(function(c) { return dc.lineChart(c); })
 		.x(d3.time.scale().domain([minDate, maxDate]))
     .brushOn(false)
     .yAxisLabel("Mentions per Minute")
     .xAxisLabel("Time")
     //.clipPadding(10)
     .elasticY(true)//
-    .dimension(dateByMinuteDim)
+    .dimension(dateByMinuteDim) // had to have same dimension as its range chart
     //.dimension(dateByMinuteCandDimension)
     .group(dateByMinuteCandGroup)
     .mouseZoomable(true)
