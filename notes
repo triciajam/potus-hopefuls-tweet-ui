@@ -74,3 +74,6 @@ linesatstart=`cat old/20151003/trump/trump2 | jq -r '.created_at' | grep ":04:" 
 
 #http://stackoverflow.com/questions/10460919/how-to-delete-first-two-lines-and-last-four-lines-from-a-text-file-with-bash
 tail -n +${linesatstart} file.txt | head -n -$linesatend > file.txt.new && mv file.txt.new file.txt
+
+# understanding crossfilter grouping
+http://stackoverflow.com/questions/24171662/crossfilter-filters-not-filtering-dc-js

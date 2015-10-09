@@ -77,13 +77,9 @@ function makeGraphs(error, tweetsJson) {
 	//Calculate metrics
 	//var numTweetsByDate = dateDim.group();
 	var numTweetsByCand = candDim.group();
-	var numTweetsByDateByMin = dateByMinuteDim.group();
 	var numTweetsByParty = partyDim.group();
+	var numTweetsByDateByMin = dateByMinuteDim.group();
 	
-	//console.log(numTweetsByDate.all());
-	//console.log(numTweetsByCand.all());
-	
-
 	dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
   dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
 	
@@ -122,9 +118,9 @@ function makeGraphs(error, tweetsJson) {
 	//var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
 	timeChart
-		.width(1000)
-		.height(150)
-		.margins({top: 10, right: 50, bottom: 30, left: 50})
+		.width(740)
+		.height(120)
+		.margins({top: 0, right: 30, bottom: 30, left: 35})
 		.dimension(dateByMinuteDim)
 		.group(numTweetsByDateByMin)
 		//.dimension(candDim)
@@ -138,9 +134,9 @@ function makeGraphs(error, tweetsJson) {
 		.yAxis().ticks(4);
 
   timeCandChart
-    .width(1000)
+    .width(740)
     .height(250)
-    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .margins({top: 10, right: 30, bottom: 30, left: 35})
     .chart(function(c) { return dc.lineChart(c); })
 		.x(d3.time.scale().domain([minDate, maxDate]))
     .brushOn(false)
@@ -159,24 +155,25 @@ function makeGraphs(error, tweetsJson) {
     .valueAccessor(function(d) {return +d.value;})
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
     // horizontal legend four items across: 4x70=280
-    .legend(dc.legend().x(500).y(50).itemHeight(13).gap(5).horizontal(1).legendWidth(280).itemWidth(70));
+    .legend(dc.legend().x(400).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(350).itemWidth(70));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   
     candChart  
-        .width(300)
-        .height(300)
-        .radius(140)
+        .width(220)
+        .height(220)
+        .radius(100)
         .dimension(candDim)
         .group(numTweetsByCand)
         .ordinalColors(d3.scale.category20().range())
-        .innerRadius(30)
+        .innerRadius(40)
         .turnOnControls(true);
    
    partyChart  
-        .width(100)
-        .height(100)
-        .radius(40)
+        .width(220)
+        .height(220)
+        .radius(100)
+        .innerRadius(40)
         .dimension(partyDim)
         .group(numTweetsByParty)
         .turnOnControls(true);
@@ -243,5 +240,8 @@ function makeGraphs(error, tweetsJson) {
 
     */
     dc.renderAll();
+    //dc.renderAll("main");
+    //dc.renderAll("updategroup");
+    
   
 };

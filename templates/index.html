@@ -14,7 +14,7 @@
   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="./">Donorschoose Dashboard</a>
+        <a class="navbar-brand" href="./">TwitCamp</a>
       </div>
     </div>
   </div>
@@ -22,34 +22,35 @@
   <div class="container-fluid">
 
     <div class="row">
-          <!-- Time Chart --> 
-          <div class="col-sm-10">
+      <div class="col-sm-3">
+        <div class="row">
+          <div class="col-sm-12">
+
+
             <div class="chart-wrapper">
               <div class="chart-title">
-                Tweets Over Time
+                Tweet Data
               </div>
               <div class="chart-stage">
-                <div id="cand-series-chart">
+                <div id="dc-data-count">
+                  <span class='filter-count'></span> selected out of <span class='total-count'></span>. |
+                  <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
                 </div>
               </div>
-              
-              <div class="chart-stage">
-                <div id="time-chart">
-                </div>
-              </div>
-              
             </div>
+
+
           </div>
-          
-          <div class="col-sm-2">
-            
-            <div class="row">
-          
-              <div class="chart-wrapper">
-                <div class="chart-title">
-                  Party
-                </div>
-                <div class="chart-stage">
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+
+
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Filter By Party
+              </div>
+              <div class="chart-stage">
                 <div id="party-chart">
                   <span class='reset' style='display: none;'>
                       Current filter: <span class='filter'></span>
@@ -57,48 +58,144 @@
                 </div>
               </div>
             </div> 
-            
-            </div>
- 
-            <div class="row">
-           
-            <div class="chart-wrapper">
-              <div class="chart-title">
-                Filter Count
-              </div>
-              <div class="chart-stage">
-                <div id="dc-data-count">
-                  <span class='filter-count'></span> selected out of <span class='total-count'></span>. | <a
-                href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
-                </div>
-              </div>
-            </div>
-            
-            </div>  
-          
+
+
           </div>
-    </div>
-    
-    <div class="row">
-      <div class="col-sm-4">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            2016 Presidential Candidate Twitter Mentions
+          </div>
+          <div class="chart-stage">
+            <div id="cand-series-chart">
+            </div>
+          </div>
+          
+          <div class="chart-stage">
+            <div id="time-chart">
+            </div>
+          </div>
+          <div class="chart-notes">
+            Tweets are collected from minutes 5 to 17 of every hour.
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-sm-3">
+        <div class="row">
+          <div class="col-sm-12">
+
             <div class="chart-wrapper">
               <div class="chart-title">
-                Candidate Tweets
+                Filter By Candidate
               </div>
               <div class="chart-stage">
                 <div id="cand-chart">
                   <span class='reset' style='display: none;'>
                       Current filter: <span class='filter'></span>
                   </span>
-                  
                 </div>
               </div>
+            </div>
+            
           </div>
-        </div>  
-        
-    </div>  
+        </div>
+      </div>
+    </div>
     
+    
+    <div class="row">
+      
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Cell Title
+          </div>
+          <div class="chart-stage">
+
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
+
+
 
     <hr>
     <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
