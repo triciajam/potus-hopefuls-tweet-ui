@@ -54,5 +54,23 @@ for f in ${files[@]}; do { mongoimport -d twit-candi -c tweets --type json --fil
 http://stackoverflow.com/questions/2943222/find-objects-between-two-dates-mongodb
 # converting string dates in pyMongo to dates
 http://stackoverflow.com/questions/8813539/how-do-i-compare-dates-from-twitter-data-stored-in-mongodb-via-pymongo
+# more dat conversion - GOOD
+http://stackoverflow.com/questions/6475987/importing-date-datatype-using-mongoimport
+# just use insert time - stored in timestamp - to figure out which rows just inserted
+# then I don't have to convert created dates
+http://stackoverflow.com/questions/3778428/best-way-to-store-date-time-in-mongodb
+
 
 for f in ${files[@]}; do { mongoimport -d twit-candi -c tweets --type json --file $f; } || { echo $f >> badimport; } done 
+
+# look for certain minutes in the data file
+cat old/20151003/trump/trump2 | jq -r '.created_at' | grep ":17:"
+# tells how many there are
+cat old/20151003/trump/trump2 | jq -r '.created_at' | grep ":17:" | wc -l 
+
+# lines to remove at end
+linesatend=`cat old/20151003/trump/trump2 | jq -r '.created_at' | grep ":17:" | wc -l` 
+linesatstart=`cat old/20151003/trump/trump2 | jq -r '.created_at' | grep ":04:" | wc -l`
+
+#http://stackoverflow.com/questions/10460919/how-to-delete-first-two-lines-and-last-four-lines-from-a-text-file-with-bash
+tail -n +${linesatstart} file.txt | head -n -$linesatend > file.txt.new && mv file.txt.new file.txt

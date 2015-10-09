@@ -64,7 +64,7 @@ function makeGraphs(error, tweetsJson) {
 	//Define Dimensions
 	var dateDim = ndx.dimension(function(d) { return d["fulldate"]; }); 
 	//var dateByDayDim = ndx.dimension(function(d) { return d["dateByDay"]; }); 
-	var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
+	//var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
 	var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
 	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
 	var partyDim = ndx.dimension(function(d) { return d["party"]; });
@@ -113,6 +113,7 @@ function makeGraphs(error, tweetsJson) {
 	var timeChart = dc.barChart("#time-chart");
 	var candChart = dc.pieChart("#cand-chart");
 	var partyChart = dc.pieChart("#party-chart");
+	var timeCandChart = dc.seriesChart("#cand-series-chart");
 	
 	//var resourceTypeChart = dc.rowChart("#resource-type-row-chart");
 	//var povertyLevelChart = dc.rowChart("#poverty-level-row-chart");
@@ -135,7 +136,7 @@ function makeGraphs(error, tweetsJson) {
 		.xAxisLabel("Day")
 		.yAxis().ticks(4);
 
-  dc.seriesChart("#cand-series-chart")
+  timeCandChart
     .width(1000)
     .height(250)
     .margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -151,11 +152,12 @@ function makeGraphs(error, tweetsJson) {
     .group(dateByMinuteCandGroup)
     .mouseZoomable(true)
     .rangeChart(timeChart)
+    .ordinalColors(d3.scale.category20().range())
     .seriesAccessor(function(d) {return d.key[0];})
     .keyAccessor(function(d) {return d.key[1];})
-    .valueAccessor(function(d) {return +d.value;});
+    .valueAccessor(function(d) {return +d.value;})
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
-    //.legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70))
+    .legend(dc.legend().x(500).y(50).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   
@@ -165,6 +167,7 @@ function makeGraphs(error, tweetsJson) {
         .radius(140)
         .dimension(candDim)
         .group(numTweetsByCand)
+        .ordinalColors(d3.scale.category20().range())
         .innerRadius(30)
         .turnOnControls(true);
    
