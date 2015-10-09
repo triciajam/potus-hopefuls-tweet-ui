@@ -123,7 +123,7 @@ function makeGraphs(error, tweetsJson) {
 
 	timeChart
 		.width(1000)
-		.height(100)
+		.height(150)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
 		.dimension(dateByMinuteDim)
 		.group(numTweetsByDateByMin)
@@ -133,7 +133,8 @@ function makeGraphs(error, tweetsJson) {
 		.x(d3.time.scale().domain([minDate, maxDate]))
 		.elasticY(true)
     .turnOnControls(true)
-		.xAxisLabel("Day")
+		.xAxisLabel("Time")
+		.yAxisLabel("Mentions per Min")
 		.yAxis().ticks(4);
 
   timeCandChart
@@ -144,7 +145,7 @@ function makeGraphs(error, tweetsJson) {
 		.x(d3.time.scale().domain([minDate, maxDate]))
     .brushOn(false)
     .yAxisLabel("Mentions per Minute")
-    .xAxisLabel("Time")
+    .xAxisLabel("")
     //.clipPadding(10)
     .elasticY(true)//
     .dimension(dateByMinuteDim) // had to have same dimension as its range chart
@@ -157,7 +158,8 @@ function makeGraphs(error, tweetsJson) {
     .keyAccessor(function(d) {return d.key[1];})
     .valueAccessor(function(d) {return +d.value;})
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
-    .legend(dc.legend().x(500).y(50).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+    // horizontal legend four items across: 4x70=280
+    .legend(dc.legend().x(500).y(50).itemHeight(13).gap(5).horizontal(1).legendWidth(280).itemWidth(70));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   

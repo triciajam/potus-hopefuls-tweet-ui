@@ -29,12 +29,15 @@
                 Tweets Over Time
               </div>
               <div class="chart-stage">
-                <div id="time-chart">
-                  <span class='reset' style='display: none;'>
-                    Current filter: <span class='filter'></span>
-                  </span>
+                <div id="cand-series-chart">
                 </div>
               </div>
+              
+              <div class="chart-stage">
+                <div id="time-chart">
+                </div>
+              </div>
+              
             </div>
           </div>
           
@@ -65,7 +68,8 @@
               </div>
               <div class="chart-stage">
                 <div id="dc-data-count">
-                  <span class='filter-count'></span> selected out of <span class='total-count'></span>.
+                  <span class='filter-count'></span> selected out of <span class='total-count'></span>. | <a
+                href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
                 </div>
               </div>
             </div>
@@ -93,24 +97,6 @@
         </div>  
         
     </div>  
-    
-       <div class="row">
-          <!-- Time Chart --> 
-          <div class="col-sm-12">
-            <div class="chart-wrapper">
-              <div class="chart-title">
-                Series for each candidate
-              </div>
-              <div class="chart-stage">
-                <div id="cand-series-chart">
-                  <span class='reset' style='display: none;'>
-                    Current filter: <span class='filter'></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>  
     
   </div>
 
