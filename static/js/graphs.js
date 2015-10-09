@@ -1,3 +1,7 @@
+
+gop = [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","kasich" ];
+dem = [ "chafee","clinton","omalley","sanders","webb" ];
+
 queue()
     .defer(d3.json, "/twit-candi/tw")
 //  .defer(d3.json, "static/geojson/us-states.json")
@@ -21,33 +25,49 @@ function makeGraphs(error, tweetsJson) {
 	var tformat = d3.time.format("%a %b %d %H:%M:%S %Z %Y");
 	tweets.forEach(function(d) {
 		d["fulldate"] = tformat.parse(d["created_at"]);
-		//var year = d["fulldate"].getFullYear();
-    //var month = d["fulldate"].getMonth();
-    //var day = d["fulldate"].getDate();
-    //var dateOnly = new Date(year,month,day);
-		//console.log(dateOnly);
-		//d["date"] = dateOnly;
-		//d["created_at"].setDate(1);
-		// this just makes it a number
-		//d["total_donations"] = +d["total_donations"];
+		var year = d["fulldate"].getFullYear();
+    var month = d["fulldate"].getMonth();
+    var day = d["fulldate"].getDate();
+    var hour = d["fulldate"].getHours();
+    var minute = d["fulldate"].getMinutes();
+    var dateByDay = new Date(year,month,day);
+    var dateByHour = new Date(year,month,day, hour);
+    var dateByMinute = new Date(year,month,day,hour, minute);
+    
+    d["dateByDay"] = dateByDay;
+    d["dateByHour"] = dateByHour;
+    d["dateByMinute"] = dateByMinute;
+    
+    if (gop.indexOf(d["tc_cand"]) != -1) {
+      d["party"] = "Republican";
+    } else if (dem.indexOf(d["tc_cand"]) != -1) {
+      d["party"] = "Democrat";
+    } else {
+      d["party"] = "NA";
+    } 
+
 	});
 	
   //console.log(tweets);
 	
 	// filter
-	// var mentions = 
+	var mentions = tweets.filter(function(d) { return d["tc_cat"] == "mentions" ? true : false; });
   // var hashtags = 
   // add party
    
     
 	//Create a Crossfilter instance
-	var ndx = crossfilter(tweets);
+	var ndx = crossfilter(mentions);
 
   //console.log(ndx);
 
 	//Define Dimensions
 	var dateDim = ndx.dimension(function(d) { return d["fulldate"]; }); 
+	//var dateByDayDim = ndx.dimension(function(d) { return d["dateByDay"]; }); 
+	var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
+	var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
 	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
+	var partyDim = ndx.dimension(function(d) { return d["party"]; });
 	//var catDim = ndx.dimension(function(d) { return d["tc_cat"]; });
 	//var stateDim = ndx.dimension(function(d) { return d["school_state"]; });
 	//var totalDonationsDim  = ndx.dimension(function(d) { return d["total_donations"]; });
@@ -55,30 +75,19 @@ function makeGraphs(error, tweetsJson) {
   //console.log(dateDim.groupAll());
 
 	//Calculate metrics
-	var numTweetsByDate = dateDim.group();
+	//var numTweetsByDate = dateDim.group();
 	var numTweetsByCand = candDim.group();
-	console.log(numTweetsByDate.all());
-	console.log(numTweetsByCand.all());
-	
-	/*
-	var numTweetsByDateCand = dateDim.group().reduce(
-  //    function (p, v) {
-            console.log(p);
-            console.log(v);
-            return p;
-        },
-        function (p, v) {
-            return p;
-        },
-  function reduceInitial() {
-    return 0;
-  }        
-  );	  
-	  
-	*/
-	
+	var numTweetsByDateByMin = dateByMinuteDim.group();
+	var numTweetsByParty = partyDim.group();
 	
 	//console.log(numTweetsByDate.all());
+	//console.log(numTweetsByCand.all());
+	
+
+	dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
+  dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
+	
+	console.log(dateByMinuteCandGroup.all());
 	//console.log(numTweetsByCand.all());
 	  
 	
@@ -103,7 +112,7 @@ function makeGraphs(error, tweetsJson) {
   //Charts
 	var timeChart = dc.barChart("#time-chart");
 	var candChart = dc.pieChart("#cand-chart");
-	
+	var partyChart = dc.pieChart("#party-chart");
 	
 	//var resourceTypeChart = dc.rowChart("#resource-type-row-chart");
 	//var povertyLevelChart = dc.rowChart("#poverty-level-row-chart");
@@ -112,11 +121,11 @@ function makeGraphs(error, tweetsJson) {
 	//var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
 	timeChart
-		.width(600)
-		.height(160)
+		.width(1000)
+		.height(100)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
-		.dimension(dateDim)
-		.group(numTweetsByDate)
+		.dimension(dateByMinuteDim)
+		.group(numTweetsByDateByMin)
 		//.dimension(candDim)
 		//.group(numTweetsByCand)
 		.transitionDuration(500)
@@ -125,7 +134,29 @@ function makeGraphs(error, tweetsJson) {
     .turnOnControls(true)
 		.xAxisLabel("Day")
 		.yAxis().ticks(4);
-		
+
+  dc.seriesChart("#cand-series-chart")
+    .width(1000)
+    .height(250)
+    .margins({top: 10, right: 50, bottom: 30, left: 50})
+    .chart(function(c) { return dc.lineChart(c).interpolate('basis'); })
+		.x(d3.time.scale().domain([minDate, maxDate]))
+    .brushOn(false)
+    .yAxisLabel("Mentions per Minute")
+    .xAxisLabel("Time")
+    //.clipPadding(10)
+    .elasticY(true)
+    .dimension(dateByMinuteCandDimension)
+    .group(dateByMinuteCandGroup)
+    //mouseZoomable(true)
+    .seriesAccessor(function(d) {return d.key[0];})
+    .keyAccessor(function(d) {return d.key[1];})
+    .valueAccessor(function(d) {return +d.value;})
+    .xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
+    //.legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70))
+  //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
+  //chart.margins().left += 40;
+  
     candChart  
         .width(300)
         .height(300)
@@ -134,7 +165,23 @@ function makeGraphs(error, tweetsJson) {
         .group(numTweetsByCand)
         .innerRadius(30)
         .turnOnControls(true);
-  
+   
+   partyChart  
+        .width(100)
+        .height(100)
+        .radius(40)
+        .dimension(partyDim)
+        .group(numTweetsByParty)
+        .turnOnControls(true);
+
+        
+  var all = ndx.groupAll();
+
+  dc.dataCount("#dc-data-count")
+   .dimension(ndx)
+   .group(all);        
+        
+  /*
   var datatable   = dc.dataTable("#cand-table");
     datatable
     .dimension(dateDim)

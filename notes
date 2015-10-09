@@ -15,6 +15,7 @@ pip install pymongo
 mongod --dbpath /Users/triciajam/Documents/Projects/twit-candi-ui/data
 
 aws s3 sync s3://twit-candi-2016/data data/ --exclude "*" --include "*201510*" --dryrun
+aws s3 sync s3://twit-candi-2016/data data/ --exclude "*" --include "*20151006*" --dryrun
 
 NOTE: du -sh "folder" - S is summary, H is human readbable
 
@@ -22,6 +23,7 @@ files=`for f in data/*/*/*; do echo $f; done`
 files=`for f in data/20151001/*/*; do echo $f; done`
 for f in ${files[@]}; do echo $f; done
 
+files=`for f in data/20151006/*/*; do echo $f; done`
 for f in ${files[@]}; do mongoimport -d twit-candi -c tweets --type json --file $f; done
 
 In mongodb shell
@@ -34,3 +36,23 @@ var format = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
 alert(format.parse("2011-07-01T19:15:28Z"));
 
 FIELDS = {'text': True, 'tc_cand': True, 'tc_cat': True, 'tc_text': True, 'tc_date': True, 'created_at': True, 'place': True, 'geo': True, 'coordinates': True, 'hashtags': True}
+
+# need to make this more robust and catch file names of errors
+files=`for f in data/20151003/*/*; do echo $f; done`
+for f in ${files[@]}; do cat $f | jq '.text'; done
+
+find text.txt -mmin +120 -exec echo "old enough" \;
+# better
+find data/20151006/* -type f -newerct "2015-10-08 11:00:00"
+# current hour
+date +"%H"
+chour=`date +"%H"`
+files=`find data/20151006/* -type f -newerct "2015-10-08 ${chour}:00:00"`
+for f in ${files[@]}; do { mongoimport -d twit-candi -c tweets --type json --file $f } || { cat $f >> badimport }; done
+
+
+http://stackoverflow.com/questions/2943222/find-objects-between-two-dates-mongodb
+# converting string dates in pyMongo to dates
+http://stackoverflow.com/questions/8813539/how-do-i-compare-dates-from-twitter-data-stored-in-mongodb-via-pymongo
+
+for f in ${files[@]}; do { mongoimport -d twit-candi -c tweets --type json --file $f; } || { echo $f >> badimport; } done 

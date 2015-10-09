@@ -22,112 +22,101 @@
   <div class="container-fluid">
 
     <div class="row">
-
-      <div class="col-sm-6">
-        <div class="row">
-
           <!-- Time Chart --> 
-          <div class="col-sm-12">
+          <div class="col-sm-10">
             <div class="chart-wrapper">
               <div class="chart-title">
                 Tweets Over Time
               </div>
               <div class="chart-stage">
                 <div id="time-chart">
-                  
                   <span class='reset' style='display: none;'>
-          Current filter: <span class='filter'></span>
-        </span>
-                  
+                    Current filter: <span class='filter'></span>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          <!-- Time Chart --> 
-
-          <!-- Resources Pie -->
-          <div class="col-sm-6">
+          
+          <div class="col-sm-2">
+            
+            <div class="row">
+          
+              <div class="chart-wrapper">
+                <div class="chart-title">
+                  Party
+                </div>
+                <div class="chart-stage">
+                <div id="party-chart">
+                  <span class='reset' style='display: none;'>
+                      Current filter: <span class='filter'></span>
+                  </span>
+                </div>
+              </div>
+            </div> 
+            
+            </div>
+ 
+            <div class="row">
+           
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Filter Count
+              </div>
+              <div class="chart-stage">
+                <div id="dc-data-count">
+                  <span class='filter-count'></span> selected out of <span class='total-count'></span>.
+                </div>
+              </div>
+            </div>
+            
+            </div>  
+          
+          </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-sm-4">
             <div class="chart-wrapper">
               <div class="chart-title">
                 Candidate Tweets
               </div>
               <div class="chart-stage">
                 <div id="cand-chart">
-                  
                   <span class='reset' style='display: none;'>
-          Current filter: <span class='filter'></span>
-        </span>
+                      Current filter: <span class='filter'></span>
+                  </span>
                   
-                </div>
                 </div>
               </div>
-            </div>
           </div>
-          <!-- Resources Pie -->
-
-          <!-- Poverty Pie -->
-          <div class="col-sm-6">
+        </div>  
+        
+    </div>  
+    
+       <div class="row">
+          <!-- Time Chart --> 
+          <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Poverty Level
+                Series for each candidate
               </div>
               <div class="chart-stage">
-                <div id="poverty-level-row-chart"></div>
+                <div id="cand-series-chart">
+                  <span class='reset' style='display: none;'>
+                    Current filter: <span class='filter'></span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-          <!-- Poverty Pie -->
-
-        </div>
-      </div>
-
-      <!-- Map -->  
-      <div class="col-sm-6">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Data Table
-          </div>
-          <div class="chart-stage">
-            <div id="cand-table"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Map -->
-
-      <!-- Metric 1 -->
-      <div class="col-sm-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Total Number of Donations
-          </div>
-          <div class="chart-stage">
-            <div id="number-projects-nd"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Metric 1 -->
-
-      <!-- Metric 2 -->
-      <div class="col-sm-3">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Total Donations in USD
-          </div>
-          <div class="chart-stage">
-            <div id="total-donations-nd"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Metric 2 -->
-
-    </div>
-
+        </div>  
+    
   </div>
 
     <hr>
     <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
 
-  </div>
 
   <script src="./static/lib/js/jquery.min.js"></script>
   <script src="./static/lib/js/bootstrap.min.js"></script>
