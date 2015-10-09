@@ -145,14 +145,16 @@ function makeGraphs(error, tweetsJson) {
     .yAxisLabel("Mentions per Minute")
     .xAxisLabel("Time")
     //.clipPadding(10)
-    .elasticY(true)
-    .dimension(dateByMinuteCandDimension)
+    .elasticY(true)//
+    .dimension(dateByMinuteDim)
+    //.dimension(dateByMinuteCandDimension)
     .group(dateByMinuteCandGroup)
-    //mouseZoomable(true)
+    .mouseZoomable(true)
+    .rangeChart(timeChart)
     .seriesAccessor(function(d) {return d.key[0];})
     .keyAccessor(function(d) {return d.key[1];})
-    .valueAccessor(function(d) {return +d.value;})
-    .xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
+    .valueAccessor(function(d) {return +d.value;});
+    //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
     //.legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70))
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
