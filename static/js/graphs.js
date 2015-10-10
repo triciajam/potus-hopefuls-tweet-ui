@@ -107,7 +107,7 @@ function makeGraphs(error, tweetsJson) {
   
   //Charts
 	var timeChart = dc.barChart("#time-chart");
-	var candChart = dc.pieChart("#cand-chart");
+	var candChart = dc.rowChart("#cand-chart");
 	var partyChart = dc.pieChart("#party-chart");
 	var timeCandChart = dc.seriesChart("#cand-series-chart");
 	
@@ -160,13 +160,13 @@ function makeGraphs(error, tweetsJson) {
   //chart.margins().left += 40;
   
     candChart  
-        .width(220)
-        .height(220)
-        .radius(100)
+        .width(300)
+        .height(800)
+        //.radius(100)
         .dimension(candDim)
         .group(numTweetsByCand)
         .ordinalColors(d3.scale.category20().range())
-        .innerRadius(40)
+        //.innerRadius(40)
         .turnOnControls(true);
    
    partyChart  
