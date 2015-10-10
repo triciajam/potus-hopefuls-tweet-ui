@@ -118,9 +118,9 @@ function makeGraphs(error, tweetsJson) {
 	//var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
 	timeChart
-		.width(740)
-		.height(120)
-		.margins({top: 0, right: 30, bottom: 30, left: 35})
+		.width(720)
+		.height(100)
+		.margins({top: 0, right: 15, bottom: 35, left: 37})
 		.dimension(dateByMinuteDim)
 		.group(numTweetsByDateByMin)
 		//.dimension(candDim)
@@ -130,17 +130,17 @@ function makeGraphs(error, tweetsJson) {
 		.elasticY(true)
     .turnOnControls(true)
 		.xAxisLabel("Time")
-		.yAxisLabel("Mentions per Min")
-		.yAxis().ticks(4);
+		.yAxisLabel("")
+		.yAxis().ticks(2);
 
   timeCandChart
-    .width(740)
+    .width(720)
     .height(250)
-    .margins({top: 10, right: 30, bottom: 30, left: 35})
+    .margins({top: 10, right: 15, bottom: 20, left: 37})
     .chart(function(c) { return dc.lineChart(c); })
 		.x(d3.time.scale().domain([minDate, maxDate]))
     .brushOn(false)
-    .yAxisLabel("Mentions per Minute")
+    .yAxisLabel("Tweets Each Minute")
     .xAxisLabel("")
     //.clipPadding(10)
     .elasticY(true)//
@@ -155,7 +155,7 @@ function makeGraphs(error, tweetsJson) {
     .valueAccessor(function(d) {return +d.value;})
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
     // horizontal legend four items across: 4x70=280
-    .legend(dc.legend().x(400).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(350).itemWidth(70));
+    .legend(dc.legend().x(300).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(420).itemWidth(70));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   
