@@ -2,6 +2,17 @@
 gop = [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","kasich" ];
 dem = [ "chafee","clinton","omalley","sanders","webb" ];
 
+allCands = gop.concat(dem);
+//allCands.push(gop);
+//allCands.push(dem);
+console.log(allCands);
+colors = d3.scale.ordinal()
+    .domain(allCands)  
+    .range(d3.scale.category20().range().slice(0,allCands.length));
+console.log(colors);
+console.log(colors.domain());
+console.log(colors.range());
+
 queue()
     .defer(d3.json, "/twit-candi/tw")
 //  .defer(d3.json, "static/geojson/us-states.json")
@@ -127,24 +138,15 @@ function makeGraphs(error, tweetsJson) {
 		.margins({top: 0, right: 10, bottom: 35, left: 37})
 		.dimension(dateByMinuteDim)
 		.group(numTweetsByDateByMin)
-		//.dimension(candDim)
-		//.group(numTweetsByCand)
 		.transitionDuration(500)
 		.x(d3.time.scale().domain([minDate, maxDate]))
 		.elasticY(true)
     .turnOnControls(true)
-    //.on('brushstart', function() { 	d3.select("#total-mins").text(numTweetsByDateByMin.size()); })
 		.xAxisLabel("Time")
 		.yAxisLabel("")
 		.yAxis().ticks(2);
 		
-/*
-  timeChart.on('brushstart', function() { 
-	        console.log("brush started");
-	        console.log(numTweetsByDateByMin.size());
-	        d3.select("#total-mins").text(numTweetsByDateByMin.size()); 
-	});
-*/
+
 
   timeCandChart
     .width(720)
@@ -162,19 +164,20 @@ function makeGraphs(error, tweetsJson) {
     .group(dateByMinuteCandGroup)
     .mouseZoomable(true)
     .rangeChart(timeChart)
-    .ordinalColors(d3.scale.category20().range())
+    .colors(colors)
+    //.ordinalColors(d3.scale.category20().range())
     .seriesAccessor(function(d) {return d.key[0];})
     .keyAccessor(function(d) {return d.key[1];})
     .valueAccessor(function(d) {return +d.value;})
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
     // horizontal legend four items across: 4x70=280
-    .legend(dc.legend().x(180).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
+    .legend(dc.legend().x(150).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   
     candChart  
         .width(260)
-        .height(420)
+        .height(400)
         .margins({top: 5, right: 5, bottom: 5, left: 5})
         //.radius(100)
         .dimension(candDim)
@@ -182,7 +185,8 @@ function makeGraphs(error, tweetsJson) {
         //.innerRadius(40)
         .gap(2)
         .ordering(function(d) { return -d.value; })
-        .ordinalColors(d3.scale.category20().range())
+        //.ordinalColors(d3.scale.category20().range())
+        .colors(colors)
         .turnOnControls(true);
    
    partyChart  
