@@ -72,6 +72,7 @@ function makeGraphs(error, tweetsJson) {
 	//var stateDim = ndx.dimension(function(d) { return d["school_state"]; });
 	//var totalDonationsDim  = ndx.dimension(function(d) { return d["total_donations"]; });
 
+
   //console.log(dateDim.groupAll());
 
 	//Calculate metrics
@@ -80,11 +81,14 @@ function makeGraphs(error, tweetsJson) {
 	var numTweetsByParty = partyDim.group();
 	var numTweetsByDateByMin = dateByMinuteDim.group();
 	
+	totalminutes = numTweetsByDateByMin.size();
+
+	
 	dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
   dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
 	
 	console.log(dateByMinuteCandGroup.all());
-	//console.log(numTweetsByCand.all());
+	console.log(numTweetsByDateByMin.all());
 	  
 	
 	//var totalDonationsByState = stateDim.group().reduceSum(function(d) {
@@ -120,7 +124,7 @@ function makeGraphs(error, tweetsJson) {
 	timeChart
 		.width(720)
 		.height(100)
-		.margins({top: 0, right: 15, bottom: 35, left: 37})
+		.margins({top: 0, right: 10, bottom: 35, left: 37})
 		.dimension(dateByMinuteDim)
 		.group(numTweetsByDateByMin)
 		//.dimension(candDim)
@@ -129,14 +133,23 @@ function makeGraphs(error, tweetsJson) {
 		.x(d3.time.scale().domain([minDate, maxDate]))
 		.elasticY(true)
     .turnOnControls(true)
+    //.on('brushstart', function() { 	d3.select("#total-mins").text(numTweetsByDateByMin.size()); })
 		.xAxisLabel("Time")
 		.yAxisLabel("")
 		.yAxis().ticks(2);
+		
+/*
+  timeChart.on('brushstart', function() { 
+	        console.log("brush started");
+	        console.log(numTweetsByDateByMin.size());
+	        d3.select("#total-mins").text(numTweetsByDateByMin.size()); 
+	});
+*/
 
   timeCandChart
     .width(720)
     .height(250)
-    .margins({top: 10, right: 15, bottom: 20, left: 37})
+    .margins({top: 10, right: 10, bottom: 20, left: 37})
     .chart(function(c) { return dc.lineChart(c); })
 		.x(d3.time.scale().domain([minDate, maxDate]))
     .brushOn(false)
@@ -155,18 +168,21 @@ function makeGraphs(error, tweetsJson) {
     .valueAccessor(function(d) {return +d.value;})
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
     // horizontal legend four items across: 4x70=280
-    .legend(dc.legend().x(300).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(420).itemWidth(70));
+    .legend(dc.legend().x(180).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   
     candChart  
-        .width(300)
-        .height(800)
+        .width(260)
+        .height(420)
+        .margins({top: 5, right: 5, bottom: 5, left: 5})
         //.radius(100)
         .dimension(candDim)
         .group(numTweetsByCand)
-        .ordinalColors(d3.scale.category20().range())
         //.innerRadius(40)
+        .gap(2)
+        .ordering(function(d) { return -d.value; })
+        .ordinalColors(d3.scale.category20().range())
         .turnOnControls(true);
    
    partyChart  
@@ -184,6 +200,9 @@ function makeGraphs(error, tweetsJson) {
   dc.dataCount("#dc-data-count")
    .dimension(ndx)
    .group(all);        
+
+	d3.select("#total-mins").text(totalminutes);
+		
         
   /*
   var datatable   = dc.dataTable("#cand-table");
