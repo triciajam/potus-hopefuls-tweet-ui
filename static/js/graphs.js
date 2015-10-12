@@ -73,12 +73,16 @@ function makeGraphs(error, tweetsJson) {
   //console.log(ndx);
 
 	//Define Dimensions
-	var dateDim = ndx.dimension(function(d) { return d["fulldate"]; }); 
+	//var dateDim = ndx.dimension(function(d) { return d["fulldate"]; }); 
+	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
 	//var dateByDayDim = ndx.dimension(function(d) { return d["dateByDay"]; }); 
 	//var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
-	var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
-	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
-	var dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
+	//var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
+	//var dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
+	var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
+	var dateByHourCandDim = ndx.dimension(function(d) {return [d.tc_cand, d.dateByHour]; });
+
+
 //	var partyDim = ndx.dimension(function(d) { return d["party"]; });
 	//var catDim = ndx.dimension(function(d) { return d["tc_cat"]; });
 	//var stateDim = ndx.dimension(function(d) { return d["school_state"]; });
@@ -91,15 +95,17 @@ function makeGraphs(error, tweetsJson) {
 	//var numTweetsByDate = dateDim.group();
 	var numTweetsByCand = candDim.group();
 	//var numTweetsByParty = partyDim.group();
-	var numTweetsByDateByMin = dateByMinuteDim.group();
+	//var numTweetsByDateByMin = dateByMinuteDim.group();
+	var numTweetsByHour = dateByHourDim.group();
 	
 	//totalminutes = numTweetsByDateByMin.size();
 
 	
-  var dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
+  //var dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
+	var numTweetsByHourCand = dateByHourCandDim.group().reduceCount();
 	
-	console.log(dateByMinuteCandGroup.all());
-	console.log(numTweetsByDateByMin.all());
+	//console.log(dateByMinuteCandGroup.all());
+	//console.log(numTweetsByDateByMin.all());
 	  
 	
 	//var totalDonationsByState = stateDim.group().reduceSum(function(d) {
@@ -113,15 +119,15 @@ function makeGraphs(error, tweetsJson) {
 	var max_state = totalDonationsByState.top(1)[0].value;
   */
 	//Define values (to be used in charts)
-	var minDate = dateByMinuteDim.bottom(1)[0]["fulldate"];
-	var maxDate = dateByMinuteDim.top(1)[0]["fulldate"];
+	var minDate = dateByHourDim.bottom(1)[0]["fulldate"];
+	var maxDate = dateByHourDim.top(1)[0]["fulldate"];
   
   //console.log(minDate);
   //console.log(maxDate);
   
   
   //Charts
-	var timeChart = dc.barChart("#time-chart");
+	var timeChart = dc.barChart("#time-chart", "owngroup");
 	var candChart = dc.rowChart("#cand-chart");
 //	var partyChart = dc.pieChart("#party-chart");
 	var timeCandChart = dc.seriesChart("#cand-series-chart");
@@ -136,8 +142,8 @@ function makeGraphs(error, tweetsJson) {
 		.width(1000)
 		.height(100)
 		.margins({top: 0, right: 10, bottom: 35, left: 37})
-		.dimension(dateByMinuteDim)
-		.group(numTweetsByDateByMin)
+		.dimension(dateByHourDim)
+		.group(numTweetsByHour)
 		.transitionDuration(500)
 		.colors(["black"])
 		.x(d3.time.scale().domain([minDate, maxDate]))
@@ -156,13 +162,13 @@ function makeGraphs(error, tweetsJson) {
     .chart(function(c) { return dc.lineChart(c); })
 		.x(d3.time.scale().domain([minDate, maxDate]))
     .brushOn(false)
-    .yAxisLabel("Tweets Each Minute")
+    .yAxisLabel("Tweets in 12-min Interval")
     .xAxisLabel("")
     //.clipPadding(10)
     .elasticY(true)//
-    .dimension(dateByMinuteDim) // had to have same dimension as its range chart
+    .dimension(dateByHourDim) // had to have same dimension as its range chart
     //.dimension(dateByMinuteCandDimension)
-    .group(dateByMinuteCandGroup)
+    .group(numTweetsByHourCand)
     .mouseZoomable(true)
     .rangeChart(timeChart)
     .colors(colors)
@@ -266,7 +272,7 @@ function makeGraphs(error, tweetsJson) {
 
     */
     dc.renderAll();
-    //dc.renderAll("main");
+    dc.renderAll("owngroup");
     //dc.renderAll("updategroup");
     
   
