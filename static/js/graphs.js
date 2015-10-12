@@ -78,7 +78,8 @@ function makeGraphs(error, tweetsJson) {
 	//var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
 	var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
 	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
-	var partyDim = ndx.dimension(function(d) { return d["party"]; });
+	var dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
+//	var partyDim = ndx.dimension(function(d) { return d["party"]; });
 	//var catDim = ndx.dimension(function(d) { return d["tc_cat"]; });
 	//var stateDim = ndx.dimension(function(d) { return d["school_state"]; });
 	//var totalDonationsDim  = ndx.dimension(function(d) { return d["total_donations"]; });
@@ -89,14 +90,13 @@ function makeGraphs(error, tweetsJson) {
 	//Calculate metrics
 	//var numTweetsByDate = dateDim.group();
 	var numTweetsByCand = candDim.group();
-	var numTweetsByParty = partyDim.group();
+	//var numTweetsByParty = partyDim.group();
 	var numTweetsByDateByMin = dateByMinuteDim.group();
 	
-	totalminutes = numTweetsByDateByMin.size();
+	//totalminutes = numTweetsByDateByMin.size();
 
 	
-	dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
-  dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
+  var dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
 	
 	console.log(dateByMinuteCandGroup.all());
 	console.log(numTweetsByDateByMin.all());
@@ -113,8 +113,8 @@ function makeGraphs(error, tweetsJson) {
 	var max_state = totalDonationsByState.top(1)[0].value;
   */
 	//Define values (to be used in charts)
-	var minDate = dateDim.bottom(1)[0]["fulldate"];
-	var maxDate = dateDim.top(1)[0]["fulldate"];
+	var minDate = dateByMinuteDim.bottom(1)[0]["fulldate"];
+	var maxDate = dateByMinuteDim.top(1)[0]["fulldate"];
   
   //console.log(minDate);
   //console.log(maxDate);
@@ -123,7 +123,7 @@ function makeGraphs(error, tweetsJson) {
   //Charts
 	var timeChart = dc.barChart("#time-chart");
 	var candChart = dc.rowChart("#cand-chart");
-	var partyChart = dc.pieChart("#party-chart");
+//	var partyChart = dc.pieChart("#party-chart");
 	var timeCandChart = dc.seriesChart("#cand-series-chart");
 	
 	//var resourceTypeChart = dc.rowChart("#resource-type-row-chart");
@@ -133,12 +133,13 @@ function makeGraphs(error, tweetsJson) {
 	//var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
 	timeChart
-		.width(720)
+		.width(1000)
 		.height(100)
 		.margins({top: 0, right: 10, bottom: 35, left: 37})
 		.dimension(dateByMinuteDim)
 		.group(numTweetsByDateByMin)
 		.transitionDuration(500)
+		.colors(["black"])
 		.x(d3.time.scale().domain([minDate, maxDate]))
 		.elasticY(true)
     .turnOnControls(true)
@@ -149,7 +150,7 @@ function makeGraphs(error, tweetsJson) {
 
 
   timeCandChart
-    .width(720)
+    .width(1000)
     .height(250)
     .margins({top: 10, right: 10, bottom: 20, left: 37})
     .chart(function(c) { return dc.lineChart(c); })
@@ -165,6 +166,7 @@ function makeGraphs(error, tweetsJson) {
     .mouseZoomable(true)
     .rangeChart(timeChart)
     .colors(colors)
+    .title(function(d) { return d.key[0] + " : " + d.key[1] + " : " + d.value; })
     //.ordinalColors(d3.scale.category20().range())
     .seriesAccessor(function(d) {return d.key[0];})
     .keyAccessor(function(d) {return d.key[1];})
@@ -188,7 +190,8 @@ function makeGraphs(error, tweetsJson) {
         //.ordinalColors(d3.scale.category20().range())
         .colors(colors)
         .turnOnControls(true);
-   
+
+/*   
    partyChart  
         .width(220)
         .height(220)
@@ -197,7 +200,7 @@ function makeGraphs(error, tweetsJson) {
         .dimension(partyDim)
         .group(numTweetsByParty)
         .turnOnControls(true);
-
+*/
         
   var all = ndx.groupAll();
 
@@ -205,7 +208,7 @@ function makeGraphs(error, tweetsJson) {
    .dimension(ndx)
    .group(all);        
 
-	d3.select("#total-mins").text(totalminutes);
+	//d3.select("#total-mins").text(totalminutes);
 		
         
   /*
