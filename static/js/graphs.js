@@ -14,61 +14,80 @@ console.log(colors.domain());
 console.log(colors.range());
 
 queue()
-    .defer(d3.json, "/twit-candi/tw")
+    .defer(d3.json, "/twit-candi/ag")
+//  .defer(d3.json, "/twit-candi/tw")
 //  .defer(d3.json, "static/geojson/us-states.json")
     .await(function(d) { 
       console.log(d); 
       })
     .await(makeGraphs);
+    //.await(test);
 
+function test(error, tweetsJson) {
+    console.log(tweetsJson);
+    
+    var tweets = tweetsJson;
+	  //var tformat = d3.time.format("%a %b %d %H:%M:%S %Z %Y");
+	  
+	  tweets.forEach(function(d) {
+  		var year = d["_id"]["year"];
+  		var month = d["_id"]["month"];
+  		var day = d["_id"]["day"];
+  		var hour = d["_id"]["hour"];
+  
+      d["dateByHour"] = new Date(year,month,day, hour);
+      d.tc_cand = d._id.tc_cand;
+      
+      if (gop.indexOf(d._id.tc_cand) != -1) {
+        d["party"] = "Republican";
+      } else if (dem.indexOf(d._id.tc_cand) != -1) {
+        d["party"] = "Democrat";
+      } else {
+        d["party"] = "NA";
+      } 
+ 
+	});
+	
+  console.log(tweets);
+}
+    
 function makeGraphs(error, tweetsJson) {
 	
 	//console.log(tweetsJson);
 	
 	
-	var tweets = tweetsJson;
-  //console.log(tweets);
-
-	// console.log(tweets);
-	//Clean projectsJson data
-	//var donorschooseProjects = projectsJson;
-	// Thu Oct 01 04:12:18 +0000 2015
-	var tformat = d3.time.format("%a %b %d %H:%M:%S %Z %Y");
-	tweets.forEach(function(d) {
-		d["fulldate"] = tformat.parse(d["created_at"]);
-		var year = d["fulldate"].getFullYear();
-    var month = d["fulldate"].getMonth();
-    var day = d["fulldate"].getDate();
-    var hour = d["fulldate"].getHours();
-    var minute = d["fulldate"].getMinutes();
-    var dateByDay = new Date(year,month,day);
-    var dateByHour = new Date(year,month,day, hour);
-    var dateByMinute = new Date(year,month,day,hour, minute);
-    
-    d["dateByDay"] = dateByDay;
-    d["dateByHour"] = dateByHour;
-    d["dateByMinute"] = dateByMinute;
-    
-    if (gop.indexOf(d["tc_cand"]) != -1) {
-      d["party"] = "Republican";
-    } else if (dem.indexOf(d["tc_cand"]) != -1) {
-      d["party"] = "Democrat";
-    } else {
-      d["party"] = "NA";
-    } 
-
+    var tweets = tweetsJson;
+	  //var tformat = d3.time.format("%a %b %d %H:%M:%S %Z %Y");
+	  
+	  tweets.forEach(function(d) {
+  		var year = d["_id"]["year"];
+  		var month = d["_id"]["month"];
+  		var day = d["_id"]["day"];
+  		var hour = d["_id"]["hour"];
+  
+      d["dateByHour"] = new Date(year,month,day, hour);
+      d.tc_cand = d._id.tc_cand;
+      
+      if (gop.indexOf(d._id.tc_cand) != -1) {
+        d["party"] = "Republican";
+      } else if (dem.indexOf(d._id.tc_cand) != -1) {
+        d["party"] = "Democrat";
+      } else {
+        d["party"] = "NA";
+      } 
+ 
 	});
-	
-  //console.log(tweets);
+
+  console.log(tweets);
 	
 	// filter
-	var mentions = tweets.filter(function(d) { return d["tc_cat"] == "mentions" ? true : false; });
+	// var mentions = tweets.filter(function(d) { return d["tc_cat"] == "mentions" ? true : false; });
   // var hashtags = 
   // add party
    
     
 	//Create a Crossfilter instance
-	var ndx = crossfilter(mentions);
+	var ndx = crossfilter(tweets);
 
   //console.log(ndx);
 
@@ -94,16 +113,20 @@ function makeGraphs(error, tweetsJson) {
 
 	//Calculate metrics
 	//var numTweetsByDate = dateDim.group();
-	var numTweetsByCand = candDim.group();
+	var numTweetsByCand = candDim.group().reduceSum(function(d) { return d.count; });
 	//var numTweetsByParty = partyDim.group();
 	//var numTweetsByDateByMin = dateByMinuteDim.group();
-	var numTweetsByHour = dateByHourDim.group();
+	var numTweetsByHour = dateByHourDim.group().reduceSum(function(d) { return d.count; });
+	var numTweetsByHourCand = dateByHourCandDim.group().reduceSum(function(d) { return d.count; });
+	
+	console.log(numTweetsByHour.all());
+	console.log(numTweetsByCand.all());
+	console.log(numTweetsByHourCand.all());
 	
 	//totalminutes = numTweetsByDateByMin.size();
 
 	
   //var dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
-	var numTweetsByHourCand = dateByHourCandDim.group().reduceCount();
 	
 	var sumHoursGroup = dateByHourDimTwo.groupAll().reduceCount();
 	
@@ -122,15 +145,15 @@ function makeGraphs(error, tweetsJson) {
 	var max_state = totalDonationsByState.top(1)[0].value;
   */
 	//Define values (to be used in charts)
-	var minDate = dateByHourDim.bottom(1)[0]["fulldate"];
-	var maxDate = dateByHourDim.top(1)[0]["fulldate"];
+	var minDate = dateByHourDim.bottom(1)[0]["dateByHour"];
+	var maxDate = dateByHourDim.top(1)[0]["dateByHour"];
   
-  //console.log(minDate);
-  //console.log(maxDate);
+  console.log(minDate);
+  console.log(maxDate);
   
   
   //Charts
-	var timeChart = dc.barChart("#time-chart", "owngroup");
+	var timeChart = dc.barChart("#time-chart");
 	var candChart = dc.rowChart("#cand-chart");
 //	var partyChart = dc.pieChart("#party-chart");
 	var timeCandChart = dc.seriesChart("#cand-series-chart");
@@ -150,7 +173,7 @@ function makeGraphs(error, tweetsJson) {
 		.transitionDuration(500)
 		.colors(["black"])
 		.x(d3.time.scale().domain([minDate, maxDate]))
-		.elasticY(false)
+		.elasticY(true)
     .turnOnControls(true)
 		.xAxisLabel("Time")
 		.yAxisLabel("")
@@ -190,7 +213,7 @@ function makeGraphs(error, tweetsJson) {
   
     candChart  
         .width(260)
-        .height(410)
+        .height(420)
         .margins({top: 5, right: 5, bottom: 5, left: 5})
         //.radius(100)
         .dimension(candDim)
@@ -283,7 +306,7 @@ function makeGraphs(error, tweetsJson) {
 
     */
     dc.renderAll();
-    dc.renderAll("owngroup");
+    //dc.renderAll("owngroup");
     //dc.renderAll("updategroup");
     
   

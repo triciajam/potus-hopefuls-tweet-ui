@@ -131,7 +131,7 @@ while (cursor.hasNext()) {   var doc = cursor.next();   db.tweets.update({_id : 
  var ts = db.tweets.find({   created_at2: {   $gte: ISODate("2015-10-06T00:00:00.000Z"),       $lt: ISODate("2015-10-07T00:00:00.000Z")     }  }, { created_at : true, created_at2 : true  }
  
  
- 
+ /Users/triciajam/Documents/Projects/twit-candi-ui/tc_ui_hourly.sh >> /Users/triciajam/Documents/Projects/twit-candi-ui/log/update 2>&1
  
 
 db.tweets.aggregate(
@@ -163,7 +163,6 @@ db.tweets.aggregate([
 # removing by date -- month is ZERO INDEXED, not 1 -- this removes all docs after a given date
 a=db.tweets.remove( { "created_at2" : { "$gt" : new Date(2015,9,14,19,59,00) } })
 
-
 db.tweets.aggregate([
   { $match: { 
     tc_cat: "mentions"
@@ -201,3 +200,52 @@ db.tweets.aggregate([
     _id: -1 
   }} 
 ]) 
+
+# aggregates by id number
+a=db.tweets.aggregate([
+    { "$group": {
+        _id: { id : "$id" },
+        count: { "$sum" : 1 }
+    }},
+    { "$match": { 
+        count : { "$gt": 1 } 
+    }}    
+])    
+
+
+# #######
+# NEed to test these two
+
+# A date solution after aggregation - this could be used for the "bucket" date
+db.collection.aggregate({
+$project:{
+	date:1,
+	newDate:{ 
+		year:{$year:"$date"}, 
+		month:{$month:"$date"}, 
+		day:{$dayOfMonth:"$date"},
+		hour: {$subtract:[{$hour:"$date"},{$mod:[{$hour:"$date"},2]}]}
+	}
+}
+})
+
+db.foo.aggregate({
+   $project: {
+       date: { $add: [new Date(0), "$ts"] }
+   }
+})
+
+db.events.aggregate([
+    { "$group": {
+        "_id": { "uid": "$uid", "sid": "$sid" },
+        "dups": { "$push": "$_id" },
+        "count": { "$sum": 1 }
+    }},
+    { "$match": { "count": { "$gt": 1 } }}
+]).forEach(function(doc) {
+    doc.dups.shift();
+    db.events.remove({ "$in": doc.dups });
+});
+
+    
+http://api.mongodb.org/python/current/examples/aggregation.html    
