@@ -80,6 +80,7 @@ function makeGraphs(error, tweetsJson) {
 	//var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
 	//var dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
 	var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
+	var dateByHourDimTwo = ndx.dimension(function(d) { return d["dateByHour"]; }); 
 	var dateByHourCandDim = ndx.dimension(function(d) {return [d.tc_cand, d.dateByHour]; });
 
 
@@ -103,6 +104,8 @@ function makeGraphs(error, tweetsJson) {
 	
   //var dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
 	var numTweetsByHourCand = dateByHourCandDim.group().reduceCount();
+	
+	var sumHoursGroup = dateByHourDimTwo.groupAll().reduceCount();
 	
 	//console.log(dateByMinuteCandGroup.all());
 	//console.log(numTweetsByDateByMin.all());
@@ -147,7 +150,7 @@ function makeGraphs(error, tweetsJson) {
 		.transitionDuration(500)
 		.colors(["black"])
 		.x(d3.time.scale().domain([minDate, maxDate]))
-		.elasticY(true)
+		.elasticY(false)
     .turnOnControls(true)
 		.xAxisLabel("Time")
 		.yAxisLabel("")
@@ -180,12 +183,14 @@ function makeGraphs(error, tweetsJson) {
     //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
     // horizontal legend four items across: 4x70=280
     .legend(dc.legend().x(150).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
+    
+    //timeCandChart.yAxis().ticks(d3.time.hour(3));
   //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
   //chart.margins().left += 40;
   
     candChart  
         .width(260)
-        .height(400)
+        .height(410)
         .margins({top: 5, right: 5, bottom: 5, left: 5})
         //.radius(100)
         .dimension(candDim)
@@ -213,6 +218,12 @@ function makeGraphs(error, tweetsJson) {
   dc.dataCount("#dc-data-count")
    .dimension(ndx)
    .group(all);        
+
+  var numberDisplay = dc.numberDisplay('#number-chart');
+  numberDisplay.group(sumHoursGroup)
+  .formatNumber(d3.format(".g"))
+  .valueAccessor( function(d) { return d; } );
+
 
 	//d3.select("#total-mins").text(totalminutes);
 		
