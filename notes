@@ -77,3 +77,127 @@ tail -n +${linesatstart} file.txt | head -n -$linesatend > file.txt.new && mv fi
 
 # understanding crossfilter grouping
 http://stackoverflow.com/questions/24171662/crossfilter-filters-not-filtering-dc-js
+
+all=`find $data_dir -name '*' -type f`
+for f in ${all[@]}; do { cat $f | jq '.text' > del.txt; } || { echo "Error in $f"; }; done
+
+justwritten=`find ${data_dir}/* -type f -newerct "2015-10-12 ${chour}:00:00"`
+
+#dirs=`for f in ${data_dir}/*/ ; do echo $f ; done`
+
+# THIS IS IT
+
+dirs=`ls -d $data_dir/*/`
+lastfiles=`for d in $dirs; do name=\`ls -t  $d | head -n1\`; echo $d$name ; done` # find very last files
+chour=`date +"%H"`
+cdate=`date +"%Y-%m-%d"`
+lastfilesthishour=`find ${lastfiles[@]} -type f -newerct "${cdate} ${chour}:00:00"` # confirm they were written this hour
+
+filesthishour=`find ${data_dir}/* -type f -newerct "${cdate} ${chour}:00:00"` # find all files written this hour
+
+# test
+for f in ${lastfilesthishour[@]}; do { cat $f | jq '.text' >  /dev/null; } && { echo "OK for $f"; } || { echo "Error in $f"; }; done
+
+
+in Mongo shell, something like,
+
+db.collection.find().forEach(function (tweet){
+    db.collection.update({_id: tweet._id}, 
+                         {$set: {created_at: new Date(tweet.created_at)}});
+});
+just compress everything into one line, and cut/paste in the mongo shell, and ur done.
+
+var ts = db.tweets.find({
+  created_at2: {
+  $gte: ISODate("2015-10-06T00:00:00.000Z"),
+      $lt: ISODate("2015-10-07T00:00:00.000Z")
+    }
+ })
+ 
+
+# this worked
+# this worked -- changed all into mongo date
+http://stackoverflow.com/questions/2900674/how-do-i-convert-a-property-in-mongodb-from-text-to-date-type
+var cursor = db.ClockTime.find()
+while (cursor.hasNext()) {
+  var doc = cursor.next();
+  db.tweets.update({_id : doc._id}, {$set : {created_at2 : new Date(doc.created_at)}})
+}  
+
+var cursor = db.tweets.find()
+while (cursor.hasNext()) {   var doc = cursor.next();   db.tweets.update({_id : doc._id}, {$set : {created_at2 : new Date(doc.created_at)}}) }
+
+ # this found all tweets in date range and ompared to original created date
+ var ts = db.tweets.find({   created_at2: {   $gte: ISODate("2015-10-06T00:00:00.000Z"),       $lt: ISODate("2015-10-07T00:00:00.000Z")     }  }, { created_at : true, created_at2 : true  }
+ 
+ 
+ 
+ 
+
+db.tweets.aggregate(
+ { $group : {
+    _id: {
+      year  : { $year: "$created_at2"},
+      month : { $month : "$created_at2" },        
+      day   : { $dayOfMonth : "$created_at2" },
+      hour  :  { $hour: "$created_at2"}
+      },
+    count: { $sum : 1 }
+  }
+}) 
+
+db.tweets.aggregate([
+  { $group : {
+    _id: {
+      year  : { $year: "$created_at2"},
+      month : { $month : "$created_at2" },        
+      day   : { $dayOfMonth : "$created_at2" },
+      hour  :  { $hour: "$created_at2"}
+      },
+    count: { $sum : 1 }
+  }},
+  { $sort: { 
+    _id: -1 
+  }} 
+]) 
+# removing by date -- month is ZERO INDEXED, not 1 -- this removes all docs after a given date
+a=db.tweets.remove( { "created_at2" : { "$gt" : new Date(2015,9,14,19,59,00) } })
+
+
+db.tweets.aggregate([
+  { $match: { 
+    tc_cat: "mentions"
+  }},
+  { $group : {
+    _id: {
+      year  : { $year: "$created_at2"},
+      month : { $month : "$created_at2" },        
+      day   : { $dayOfMonth : "$created_at2" },
+      hour  :  { $hour: "$created_at2"},
+      tc_cand  :  "$tc_cand"
+      },
+    count: { $sum : 1 }
+  }},
+  { $sort: { 
+    _id: -1 
+  }} 
+]) 
+
+db.tweets.aggregate([
+  { $match: { 
+    tc_cat: "mentions"
+  }},
+  { $group : {
+    _id: {
+      year  : { $year: "$created_at2"},
+      month : { $month : "$created_at2" },        
+      day   : { $dayOfMonth : "$created_at2" },
+      hour  :  { $hour: "$created_at2"},
+      tc_cand  :  "$tc_cand"
+      },
+    count: { $sum : 1 }
+  }},
+  { $sort: { 
+    _id: -1 
+  }} 
+]) 
