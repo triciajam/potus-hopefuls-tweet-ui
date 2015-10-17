@@ -9,7 +9,6 @@ console.log(allCands);
 colors = d3.scale.ordinal()
     .domain(allCands)  
     .range(d3.scale.category20().range().slice(0,allCands.length));
-console.log(colors);
 console.log(colors.domain());
 console.log(colors.range());
 
@@ -31,11 +30,11 @@ function test(error, tweetsJson) {
 	  
 	  tweets.forEach(function(d) {
   		var year = d["_id"]["year"];
-  		var month = d["_id"]["month"];
+  		var month = d["_id"]["month"] - 1;
   		var day = d["_id"]["day"];
   		var hour = d["_id"]["hour"];
   
-      d["dateByHour"] = new Date(year,month,day, hour);
+      d["time"] = new Date(year,month,day, hour);
       d.tc_cand = d._id.tc_cand;
       
       if (gop.indexOf(d._id.tc_cand) != -1) {
@@ -57,15 +56,15 @@ function makeGraphs(error, tweetsJson) {
 	
 	
     var tweets = tweetsJson;
-	  //var tformat = d3.time.format("%a %b %d %H:%M:%S %Z %Y");
+	  var tformat = d3.time.format("%a %b %d %H");
 	  
 	  tweets.forEach(function(d) {
   		var year = d["_id"]["year"];
-  		var month = d["_id"]["month"];
+  		var month = d["_id"]["month"] -1;
   		var day = d["_id"]["day"];
   		var hour = d["_id"]["hour"];
   
-      d["dateByHour"] = new Date(year,month,day, hour);
+      d["time"] = new Date(year,month,day, hour);
       d.tc_cand = d._id.tc_cand;
       
       if (gop.indexOf(d._id.tc_cand) != -1) {
@@ -80,27 +79,13 @@ function makeGraphs(error, tweetsJson) {
 
   console.log(tweets);
 	
-	// filter
-	// var mentions = tweets.filter(function(d) { return d["tc_cat"] == "mentions" ? true : false; });
-  // var hashtags = 
-  // add party
-   
-    
 	//Create a Crossfilter instance
 	var ndx = crossfilter(tweets);
 
-  //console.log(ndx);
-
-	//Define Dimensions
-	//var dateDim = ndx.dimension(function(d) { return d["fulldate"]; }); 
+	// Define Dimensions
 	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
-	//var dateByDayDim = ndx.dimension(function(d) { return d["dateByDay"]; }); 
-	//var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
-	//var dateByMinuteDim = ndx.dimension(function(d) { return d["dateByMinute"]; }); 
-	//var dateByMinuteCandDimension = ndx.dimension(function(d) {return [d.tc_cand, d.dateByMinute]; });
-	var dateByHourDim = ndx.dimension(function(d) { return d["dateByHour"]; }); 
-	var dateByHourDimTwo = ndx.dimension(function(d) { return d["dateByHour"]; }); 
-	var dateByHourCandDim = ndx.dimension(function(d) {return [d.tc_cand, d.dateByHour]; });
+	var timeDim = ndx.dimension(function(d) { return d["time"]; }); 
+	var candTimeDim = ndx.dimension(function(d) {return [d.tc_cand, d.time]; });
 
 
 //	var partyDim = ndx.dimension(function(d) { return d["party"]; });
@@ -108,45 +93,18 @@ function makeGraphs(error, tweetsJson) {
 	//var stateDim = ndx.dimension(function(d) { return d["school_state"]; });
 	//var totalDonationsDim  = ndx.dimension(function(d) { return d["total_donations"]; });
 
-
-  //console.log(dateDim.groupAll());
-
 	//Calculate metrics
-	//var numTweetsByDate = dateDim.group();
 	var numTweetsByCand = candDim.group().reduceSum(function(d) { return d.count; });
-	//var numTweetsByParty = partyDim.group();
-	//var numTweetsByDateByMin = dateByMinuteDim.group();
-	var numTweetsByHour = dateByHourDim.group().reduceSum(function(d) { return d.count; });
-	var numTweetsByHourCand = dateByHourCandDim.group().reduceSum(function(d) { return d.count; });
+	var numTweetsByTime = timeDim.group().reduceSum(function(d) { return d.count; });
+	var numTweetsByCandTime = candTimeDim.group().reduceSum(function(d) { return d.count; });
 	
-	console.log(numTweetsByHour.all());
+	console.log(numTweetsByTime.all());
 	console.log(numTweetsByCand.all());
-	console.log(numTweetsByHourCand.all());
+	console.log(numTweetsByCandTime.all());
 	
-	//totalminutes = numTweetsByDateByMin.size();
-
-	
-  //var dateByMinuteCandGroup = dateByMinuteCandDimension.group().reduceCount();
-	
-	var sumHoursGroup = dateByHourDimTwo.groupAll().reduceCount();
-	
-	//console.log(dateByMinuteCandGroup.all());
-	//console.log(numTweetsByDateByMin.all());
-	  
-	
-	//var totalDonationsByState = stateDim.group().reduceSum(function(d) {
-	//	return d["total_donations"];
-	//});
-
-  /*
-	var all = ndx.groupAll();
-	var totalTweets = ndx.groupAll().reduceSum(function(d) {return d["total_donations"];});
-
-	var max_state = totalDonationsByState.top(1)[0].value;
-  */
 	//Define values (to be used in charts)
-	var minDate = dateByHourDim.bottom(1)[0]["dateByHour"];
-	var maxDate = dateByHourDim.top(1)[0]["dateByHour"];
+	var minDate = timeDim.bottom(1)[0]["time"];
+	var maxDate = timeDim.top(1)[0]["time"];
   
   console.log(minDate);
   console.log(maxDate);
@@ -168,18 +126,17 @@ function makeGraphs(error, tweetsJson) {
 		.width(1000)
 		.height(100)
 		.margins({top: 0, right: 10, bottom: 35, left: 37})
-		.dimension(dateByHourDim)
-		.group(numTweetsByHour)
+		.dimension(timeDim)
+		.group(numTweetsByTime)
 		.transitionDuration(500)
 		.colors(["black"])
 		.x(d3.time.scale().domain([minDate, maxDate]))
 		.elasticY(true)
     .turnOnControls(true)
 		.xAxisLabel("Time")
+		//.tickFormat(function(d) {return tformat; })
 		.yAxisLabel("")
 		.yAxis().ticks(2);
-		
-
 
   timeCandChart
     .width(1000)
@@ -192,9 +149,9 @@ function makeGraphs(error, tweetsJson) {
     .xAxisLabel("")
     //.clipPadding(10)
     .elasticY(true)//
-    .dimension(dateByHourDim) // had to have same dimension as its range chart
+    .dimension(timeDim) // had to have same dimension as its range chart
     //.dimension(dateByMinuteCandDimension)
-    .group(numTweetsByHourCand)
+    .group(numTweetsByCandTime)
     .mouseZoomable(true)
     .rangeChart(timeChart)
     .colors(colors)
@@ -213,8 +170,8 @@ function makeGraphs(error, tweetsJson) {
   
     candChart  
         .width(260)
-        .height(420)
-        .margins({top: 5, right: 5, bottom: 5, left: 5})
+        .height(450)
+        .margins({top: 5, right: 5, bottom: 20, left: 5})
         //.radius(100)
         .dimension(candDim)
         .group(numTweetsByCand)
@@ -223,7 +180,8 @@ function makeGraphs(error, tweetsJson) {
         .ordering(function(d) { return -d.value; })
         //.ordinalColors(d3.scale.category20().range())
         .colors(colors)
-        .turnOnControls(true);
+        .turnOnControls(true)
+        .xAxis().ticks(4);
 
 /*   
    partyChart  
@@ -236,21 +194,51 @@ function makeGraphs(error, tweetsJson) {
         .turnOnControls(true);
 */
         
-  var all = ndx.groupAll();
+  var allCounts = ndx.groupAll().reduceSum(function(d) { return d.count; });
+  
+  var numberDisplay = dc.numberDisplay('#number-chart');
+  numberDisplay
+      .group(allCounts)
+      .formatNumber(d3.format(",g"))
+      .html({
+        one:"<span style=\"color:steelblue; font-size: 26px;\">%number</span> Tweet Selected",
+        some:"<span style=\"color:steelblue; font-size: 26px;\">%number</span> Tweets Selected",
+        none:"<span style=\"color:steelblue; font-size: 26px;\">No</span> Tweets"
+      })
+      .valueAccessor( function(d) { return d; });
 
-  dc.dataCount("#dc-data-count")
-   .dimension(ndx)
-   .group(all);        
+/*
+  # An attempt at counting minutes.  Almost there, not quite.
+
+  var all2 = timeDim.groupAll().reduce(
+          function (p, v) {
+              ++p.n;
+              p.tot += v.count;
+              p.mins.set(v.time, 1);
+              return p;
+          },
+          function (p, v) {
+              --p.n;
+              p.tot -= v.count;
+              p.mins.remove(v.time);
+              return p;
+          },
+          function () { return {n:0,tot:0, mins: d3.map()}; }
+      );
+  console.log(all2);
 
   var numberDisplay = dc.numberDisplay('#number-chart');
-  numberDisplay.group(sumHoursGroup)
-  .formatNumber(d3.format(".g"))
-  .valueAccessor( function(d) { return d; } );
+  numberDisplay
+    .group(all2)
+    .formatNumber(d3.format(",g"))
+    .valueAccessor( function(d) { return d.mins.size(); });
+
+*/
+//  dc.dataCount("#dc-data-count")
+//   .dimension(ndx)
+//   .group(all);        
 
 
-	//d3.select("#total-mins").text(totalminutes);
-		
-        
   /*
   var datatable   = dc.dataTable("#cand-table");
     datatable
@@ -266,7 +254,7 @@ function makeGraphs(error, tweetsJson) {
 
 	totalDonationsND
 		.formatNumber(d3.format("d"))
-		.valueAccessor(function(d){return d; })
+  		.valueAccessor(function(d){return d; })
 		.group(totalDonations)
 		.formatNumber(d3.format(".3s"));
 
