@@ -34,7 +34,7 @@ function test(error, tweetsJson) {
   		var day = d["_id"]["day"];
   		var hour = d["_id"]["hour"];
   
-      d["time"] = new Date(year,month,day, hour);
+      d["time"] = new Date.UTC(year,month,day, hour);
       d.tc_cand = d._id.tc_cand;
       
       if (gop.indexOf(d._id.tc_cand) != -1) {
@@ -56,7 +56,7 @@ function makeGraphs(error, tweetsJson) {
 	
 	
     var tweets = tweetsJson;
-	  var tformat = d3.time.format("%a %b %d %H");
+	  var tformat = d3.time.format("%a %b %d %I %p");
 	  
 	  tweets.forEach(function(d) {
   		var year = d["_id"]["year"];
@@ -64,7 +64,7 @@ function makeGraphs(error, tweetsJson) {
   		var day = d["_id"]["day"];
   		var hour = d["_id"]["hour"];
   
-      d["time"] = new Date(year,month,day, hour);
+      d["time"] = Date.UTC(year,month,day, hour);
       d.tc_cand = d._id.tc_cand;
       
       if (gop.indexOf(d._id.tc_cand) != -1) {
@@ -155,7 +155,7 @@ function makeGraphs(error, tweetsJson) {
     .mouseZoomable(true)
     .rangeChart(timeChart)
     .colors(colors)
-    .title(function(d) { return d.key[0] + " : " + d.key[1] + " : " + d.value; })
+    .title(function(d) { return d.key[0] + " : " + tformat(new Date(d.key[1])) + " : " + d.value; })
     //.ordinalColors(d3.scale.category20().range())
     .seriesAccessor(function(d) {return d.key[0];})
     .keyAccessor(function(d) {return d.key[1];})
