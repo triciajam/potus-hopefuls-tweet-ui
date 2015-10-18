@@ -22,13 +22,16 @@ var TIME_DIFF = 20 * 60 * 1000; // 20 mins in milliseconds
 var compdate = date - TIME_DIFF;
 
 //result = db.tweets.find({ _id: { $gt: objectIdWithTimestamp('2015/10/14') } });
-var latest_docs = db.tweets.find({ _id: { $gt: objectIdWithTimestamp(compdate) } });
-latest_docs.count();
+//var latest_docs = db.tweets.find({ _id: { $gt: objectIdWithTimestamp(compdate) } });
+//latest_docs.count();
+
+var nodates=db.tweets.find( { created_at2: { $exists: false } } )
+nodates.count();
 
 // now fix the dates - make a real mongodb date
 //var cursor = db.tweets.find()
-while (latest_docs.hasNext()) {
-  var doc = latest_docs.next();
+while (nodates.hasNext()) {
+  var doc = nodates.next();
   db.tweets.update({_id : doc._id}, {$set : {created_at2 : new Date(doc.created_at)}});
 }
 

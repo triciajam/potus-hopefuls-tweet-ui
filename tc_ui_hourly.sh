@@ -13,7 +13,7 @@ cd /Users/triciajam/Documents/Projects/twit-candi-ui
 
 # date in UTC - this is folder in AWS
 dateonly=$(date -u '+%Y%m%d');
-datetime=$(date '+%Y-%m-%d-%H-%M-%S');
+datetime=$(date '+%Y-%m-%d.%H-%M-%S');
 
 mkdir -p ./${DATA_PATH}/${dateonly}
 
@@ -79,7 +79,7 @@ if [[ "${#newfiles[@]}" -ne 0 ]]; then
     beforedates=`/usr/local/bin/mongo $DB --eval 'db.tweets.find({ "created_at2" : { $exists:true }}).count();' | grep "^[0-9]*$" `
     echo "** $datetime [ TC-DB-UPDATE ] : BEFORE : $beforedates docs have created_at2 date."
     {
-      /usr/local/bin/mongo < mongo_hourly.js > ${LOG_PATH}/${datetime}-mongo-date-fix
+      /usr/local/bin/mongo < mongo_hourly.js 
     } && {
       echo "** $datetime [ TC-DB-UPDATE ] : SUCCESS : Mongo Date Fix Completed."
     } || {

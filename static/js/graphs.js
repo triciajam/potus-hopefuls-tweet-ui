@@ -60,7 +60,7 @@ function makeGraphs(error, tweetsJson) {
 	  
 	  tweets.forEach(function(d) {
   		var year = d["_id"]["year"];
-  		var month = d["_id"]["month"] -1;
+  		var month = d["_id"]["month"] -1; // Javascript indexes month by zero
   		var day = d["_id"]["day"];
   		var hour = d["_id"]["hour"];
   

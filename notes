@@ -131,7 +131,7 @@ while (cursor.hasNext()) {   var doc = cursor.next();   db.tweets.update({_id : 
  var ts = db.tweets.find({   created_at2: {   $gte: ISODate("2015-10-06T00:00:00.000Z"),       $lt: ISODate("2015-10-07T00:00:00.000Z")     }  }, { created_at : true, created_at2 : true  }
  
  
- /Users/triciajam/Documents/Projects/twit-candi-ui/tc_ui_hourly.sh >> /Users/triciajam/Documents/Projects/twit-candi-ui/log/update 2>&1
+/Users/triciajam/Documents/Projects/twit-candi-ui/tc_ui_hourly.sh >> /Users/triciajam/Documents/Projects/twit-candi-ui/log/update 2>&1
  
 
 db.tweets.aggregate(
