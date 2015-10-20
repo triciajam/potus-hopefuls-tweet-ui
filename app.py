@@ -14,10 +14,16 @@ DBS_NAME = 'twit-candi'
 COLLECTION_NAME = 'tweets'
 FIELDS = {'text': True, 'tc_cand': True, 'tc_cat': True, 'tc_text': True, 'tc_date': True, 'created_at': True }
 
-pipeline = [ {"$unwind": "$tags"},
-             {"$group": {"_id": "$tags", "count": {"$sum": 1}}},
-             {"$sort": SON([("count", -1), ("_id", -1)])}
+
+tagsPipeline = [
+  {"$project": {
+    "entities.hashtags.text" : 1,
+    "tc_cand" : 1,
+    "created_at2" : 1
+  }},
+  {"$unwind": "$entities.hashtags"} 
 ]
+
 pipeline = [  { "$match": { 
                   "tc_cat" : "mentions"
               }},
@@ -32,6 +38,32 @@ pipeline = [  { "$match": {
                   "count": { "$sum" : 1 }
               }}
            ]
+           
+pipelinetwo =  [  { "$match": { 
+                  "tc_cat" : "mentions"
+                  }},
+                  {"$project": {
+                    "entities.hashtags.text" : 1,
+                    "tc_cand" : 1,
+                    "created_at2" : 1
+                  }},
+                  {"$project": {
+                    "tags" : "$entities.hashtags.text",
+                    "tc_cand" : 1,
+                    "created_at2" : 1
+                  }},
+                { "$group" : {
+                    "_id" : {
+                      "year"  : { "$year": "$created_at2"},
+                      "month" : { "$month": "$created_at2" },        
+                      "day"   : { "$dayOfMonth": "$created_at2" },
+                      "hour"  :  { "$hour": "$created_at2"},
+                      "tc_cand"  :  "$tc_cand"
+                      },
+                    "count" : { "$sum" : 1 },
+                    "tags" : { "$push" : "$tags" }
+                }}
+             ]
 
 @app.route("/")
 def index():
@@ -54,6 +86,18 @@ def tweetByHoursCand():
     connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
     collection = connection[DBS_NAME][COLLECTION_NAME]
     tweets = collection.aggregate(pipeline)
+    json_tweets = []
+    for tweet in tweets:
+        json_tweets.append(tweet)
+    json_tweets = json.dumps(json_tweets, default=json_util.default)
+    connection.close()
+    return json_tweets
+
+@app.route("/twit-candi/tags")
+def tags():
+    connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
+    collection = connection[DBS_NAME][COLLECTION_NAME]
+    tweets = collection.aggregate(pipelinetwo)
     json_tweets = []
     for tweet in tweets:
         json_tweets.append(tweet)

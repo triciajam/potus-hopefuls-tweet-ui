@@ -9,11 +9,12 @@ console.log(allCands);
 colors = d3.scale.ordinal()
     .domain(allCands)  
     .range(d3.scale.category20().range().slice(0,allCands.length));
-console.log(colors.domain());
-console.log(colors.range());
+//console.log(colors.domain());
+//console.log(colors.range());
 
 queue()
     .defer(d3.json, "/twit-candi/ag")
+    .defer(d3.json, "/twit-candi/tags")
 //  .defer(d3.json, "/twit-candi/tw")
 //  .defer(d3.json, "static/geojson/us-states.json")
     .await(function(d) { 
@@ -22,10 +23,12 @@ queue()
     .await(makeGraphs);
     //.await(test);
 
-function test(error, tweetsJson) {
+function test(error, tweetsJson, tagsJson) {
     console.log(tweetsJson);
+    console.log(tagsJson);
     
-    var tweets = tweetsJson;
+    //var tweets = tweetsJson;
+    var tweets = tagsJson;
 	  //var tformat = d3.time.format("%a %b %d %H:%M:%S %Z %Y");
 	  
 	  tweets.forEach(function(d) {
@@ -34,7 +37,7 @@ function test(error, tweetsJson) {
   		var day = d["_id"]["day"];
   		var hour = d["_id"]["hour"];
   
-      d["time"] = new Date.UTC(year,month,day, hour);
+      d["time"] = Date.UTC(year,month,day, hour);
       d.tc_cand = d._id.tc_cand;
       
       if (gop.indexOf(d._id.tc_cand) != -1) {
@@ -44,18 +47,21 @@ function test(error, tweetsJson) {
       } else {
         d["party"] = "NA";
       } 
+      d.tagsflat = [].concat.apply([], d.tags);
  
 	});
 	
   console.log(tweets);
 }
     
-function makeGraphs(error, tweetsJson) {
+function makeGraphs(error, tweetsJson, tagsJson) {
 	
 	//console.log(tweetsJson);
+    console.log(tagsJson);
 	
 	
-    var tweets = tweetsJson;
+    var tweets = tagsJson;
+	  //var tweets = tweetsJson;
 	  var tformat = d3.time.format("%a %b %d %I %p");
 	  
 	  tweets.forEach(function(d) {
@@ -74,11 +80,14 @@ function makeGraphs(error, tweetsJson) {
       } else {
         d["party"] = "NA";
       } 
+      d.tagsflat = [].concat.apply([], d.tags);
  
 	});
 
-  console.log(tweets);
-	
+  //console.log(tweets);
+  //tweets = tweets.slice(1581,1590);
+	//console.log(tweets);
+  
 	//Create a Crossfilter instance
 	var ndx = crossfilter(tweets);
 
@@ -98,9 +107,9 @@ function makeGraphs(error, tweetsJson) {
 	var numTweetsByTime = timeDim.group().reduceSum(function(d) { return d.count; });
 	var numTweetsByCandTime = candTimeDim.group().reduceSum(function(d) { return d.count; });
 	
-	console.log(numTweetsByTime.all());
-	console.log(numTweetsByCand.all());
-	console.log(numTweetsByCandTime.all());
+	//console.log(numTweetsByTime.all());
+	//console.log(numTweetsByCand.all());
+	//console.log(numTweetsByCandTime.all());
 	
 	//Define values (to be used in charts)
 	var minDate = timeDim.bottom(1)[0]["time"];
@@ -206,6 +215,91 @@ function makeGraphs(error, tweetsJson) {
         none:"<span style=\"color:steelblue; font-size: 26px;\">No</span> Tweets"
       })
       .valueAccessor( function(d) { return d; });
+
+
+function reduceAdd(p, v) {
+  if (v.tagsflat[0] === "") return p;    // skip empty values
+  v.tagsflat.forEach (function(val, idx) {
+    if (val != "all" && val != "top") {
+      p[val] = (p[val] || 0) + 1; //increment counts
+    }  
+  });
+  return p;
+}
+
+function reduceRemove(p, v) {
+  if (v.tagsflat[0] === "") return p;    // skip empty values
+  v.tagsflat.forEach (function(val, idx) {
+    if (val != "all" && val != "top") {
+      p[val] = (p[val] || 0) - 1; //decrement counts
+    }  
+  });
+  return p;
+   
+}
+
+function reduceInitial() {
+  return {};  
+}
+
+var tagsDim = ndx.dimension(function(d){ return d.tagsflat;});
+var tagsGroup = tagsDim.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+//console.log(tagsGroup);
+// hack to make dc.js charts work
+tagsGroup.all = function() {
+  var newObject = [];
+  for (var key in this) {
+    if (this.hasOwnProperty(key) && key != "all" && key != "top") {
+      newObject.push({
+        key: key,
+        value: this[key]
+      });
+    }
+  }
+  return newObject;
+};
+
+tagsGroup.top = function(count) {
+    //console.log(this);
+    var newObject = this.all();
+    //console.log(newObject);
+    newObject.sort(function(a, b){return b.value - a.value});
+    //console.log(newObject.slice(0, count));
+    return newObject.slice(0, count);
+    //return null;
+};
+
+var tagchart = dc.rowChart("#tag-chart");
+tagchart      
+    .height(400)
+    .margins({top: 5, right: 5, bottom: 20, left: 5})
+    .renderLabel(true)
+    .dimension(tagsDim)
+    .group(tagsGroup)
+    .elasticX(true)
+    .cap(15)
+    .ordering(function(d) { return -d.value; })
+    .xAxis().ticks(4);
+
+tagchart.filterHandler (function (dimension, filters) {
+       dimension.filter(null);   
+        if (filters.length === 0)
+            dimension.filter(null);
+        else
+            dimension.filterFunction(function (d) {
+                for (var i=0; i < d.length; i++) {
+                    if (filters.indexOf(d[i]) >= 0) return true;
+                }
+                return false;
+            });
+    return filters; 
+});    
+
+    //.filterHandler(function(dimension, filter){     
+    //    dimension.filter(function(d) {return chart.filter() != null ? d.indexOf(chart.filter()) >= 0 : true;}); // perform filtering
+    //    return filter; // return the actual filter value
+    //   })
+    //.xAxis().ticks(3);
 
 /*
   # An attempt at counting minutes.  Almost there, not quite.

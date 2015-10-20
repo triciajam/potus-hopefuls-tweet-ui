@@ -182,7 +182,7 @@ db.tweets.aggregate([
   }} 
 ]) 
 
-db.tweets.aggregate([
+a=db.tweets.aggregate([
   { $match: { 
     tc_cat: "mentions"
   }},
@@ -212,9 +212,127 @@ a=db.tweets.aggregate([
     }}    
 ])    
 
+# most common hashtags
+db.tweets.aggregate([
+  {"$unwind": "$entities.hashtags"},
+  {"$group": {"_id": "$entities.hashtags.text", "count": {"$sum": 1}}},
+  {"$sort": { "count" : -1 } }
+])  
+
+db.tweets.aggregate([
+  {"$project": {
+    entities : 1,
+    tc_cand : 1
+  }},
+  {"$unwind": "$entities.hashtags"},
+  
+  {"$group": {"_id": "$entities.hashtags.text", "tc_cand" : "$tc_cand", "count": {"$sum": 1}}},
+  {"$sort": { "count" : -1 } }
+])  
+
+# number of hashtags per candidate already aggregated
+db.tweets.aggregate([
+  {"$project": {
+    "entities.hashtags" : 1,
+    tc_cand : 1
+  }},
+  {"$unwind": "$entities.hashtags"},
+  {"$group": 
+    {"_id": {
+      "tag" : "$entities.hashtags.text", 
+      "tc_cand" : "$tc_cand" },
+    "count": {"$sum": 1}
+  }},
+  {"$sort": { "count" : -1 } }
+])
+# hashtags "unwound" with dates and candidates
+db.tweets.aggregate([
+  {"$project": {
+    "entities.hashtags.text" : 1,
+    tc_cand : 1,
+    created_at2 : 1
+  }},
+  {"$unwind": "$entities.hashtags"} ])
+
+a=db.tweets.aggregate([
+  {"$project": {
+    "entities.hashtags.text" : 1,
+    tc_cand : 1,
+    created_at2 : 1
+  }},
+  {"$unwind": "$entities.hashtags"},
+  {"$project": {
+    "tags" : "$entities.hashtags.text",
+    tc_cand : 1,
+    created_at2 : 1
+  }}
+])
+
+# this is it -- unwind by hastags -- group by candidate / hour
+b=db.tweets.aggregate([
+  { $match: { 
+    tc_cat: "mentions"
+  }},
+  {"$project": {
+    "entities.hashtags.text" : 1,
+    tc_cand : 1,
+    created_at2 : 1
+  }},
+  {"$unwind": "$entities.hashtags"},
+  {"$project": {
+    "tags" : "$entities.hashtags.text",
+    tc_cand : 1,
+    created_at2 : 1
+  }},
+  { $group : {
+    _id: {
+      year  : { $year: "$created_at2"},
+      month : { $month : "$created_at2" },        
+      day   : { $dayOfMonth : "$created_at2" },
+      hour  :  { $hour: "$created_at2"},
+      tc_cand  :  "$tc_cand",
+      tags : "$tags"
+      },
+    count: { $sum : 1 }
+  }},
+  {"$sort": { "count" : -1 } }
+])
+
+# this counts tweets by hour and puts all tags in that hour into an array
+c=db.tweets.aggregate([
+  { $match: { 
+    tc_cat: "mentions"
+  }},
+  {"$project": {
+    "entities.hashtags.text" : 1,
+    tc_cand : 1,
+    created_at2 : 1
+  }},
+  {"$project": {
+    "tags" : "$entities.hashtags.text",
+    tc_cand : 1,
+    created_at2 : 1
+  }},
+  { $group : {
+    _id: {
+      year  : { $year: "$created_at2"},
+      month : { $month : "$created_at2" },        
+      day   : { $dayOfMonth : "$created_at2" },
+      hour  :  { $hour: "$created_at2"},
+      tc_cand  :  "$tc_cand",
+      },
+    count: { $sum : 1 },
+    tags : { "$push" : "$tags" }
+  }}])
+  
+#  ,
+#{
+#  allowDiskUse:true })
+
 
 # #######
 # NEed to test these two
+# ########
 
 # A date solution after aggregation - this could be used for the "bucket" date
 db.collection.aggregate({
@@ -247,5 +365,13 @@ db.events.aggregate([
     db.events.remove({ "$in": doc.dups });
 });
 
+  
+
+pipeline = [ {"$unwind": "$tags"},
+             {"$group": {"_id": "$tags", "count": {"$sum": 1}}},
+             {"$sort": SON([("count", -1), ("_id"  -1)])}
+]
     
-http://api.mongodb.org/python/current/examples/aggregation.html    
+    
+http://api.mongodb.org/python/current/examples/aggregation.html  
+find /path/to/files* -mtime +5 -exec rm {} \;
