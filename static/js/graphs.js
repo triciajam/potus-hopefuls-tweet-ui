@@ -13,7 +13,7 @@ colors = d3.scale.ordinal()
 //console.log(colors.range());
 
 queue()
-    .defer(d3.json, "/twit-candi/ag")
+    //.defer(d3.json, "/twit-candi/ag")
     .defer(d3.json, "/twit-candi/tags")
 //  .defer(d3.json, "/twit-candi/tw")
 //  .defer(d3.json, "static/geojson/us-states.json")
@@ -23,8 +23,8 @@ queue()
     .await(makeGraphs);
     //.await(test);
 
-function test(error, tweetsJson, tagsJson) {
-    console.log(tweetsJson);
+function test(error, tagsJson) {
+    //console.log(tweetsJson);
     console.log(tagsJson);
     
     //var tweets = tweetsJson;
@@ -54,7 +54,7 @@ function test(error, tweetsJson, tagsJson) {
   console.log(tweets);
 }
     
-function makeGraphs(error, tweetsJson, tagsJson) {
+function makeGraphs(error, tagsJson) {
 	
 	//console.log(tweetsJson);
     console.log(tagsJson);
@@ -132,7 +132,7 @@ function makeGraphs(error, tweetsJson, tagsJson) {
 	//var totalDonationsND = dc.numberDisplay("#total-donations-nd");
 
 	timeChart
-		.width(1000)
+		.width(770)
 		.height(100)
 		.margins({top: 0, right: 10, bottom: 35, left: 37})
 		.dimension(timeDim)
@@ -148,7 +148,7 @@ function makeGraphs(error, tweetsJson, tagsJson) {
 		.yAxis().ticks(2);
 
   timeCandChart
-    .width(1000)
+    .width(770)
     .height(250)
     .margins({top: 10, right: 10, bottom: 20, left: 37})
     .chart(function(c) { return dc.lineChart(c); })
@@ -178,7 +178,7 @@ function makeGraphs(error, tweetsJson, tagsJson) {
   //chart.margins().left += 40;
   
     candChart  
-        .width(260)
+        .width(170)
         .height(450)
         .margins({top: 5, right: 5, bottom: 20, left: 5})
         //.radius(100)
@@ -271,13 +271,15 @@ tagsGroup.top = function(count) {
 
 var tagchart = dc.rowChart("#tag-chart");
 tagchart      
-    .height(400)
+    .width(170)
+    .height(450)
     .margins({top: 5, right: 5, bottom: 20, left: 5})
     .renderLabel(true)
     .dimension(tagsDim)
     .group(tagsGroup)
+    .turnOnControls(false)
     .elasticX(true)
-    .cap(15)
+    .cap(25)
     .ordering(function(d) { return -d.value; })
     .xAxis().ticks(4);
 

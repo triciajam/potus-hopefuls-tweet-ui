@@ -13,6 +13,7 @@ cd /Users/triciajam/Documents/Projects/twit-candi-ui
 
 # date in UTC - this is folder in AWS
 dateonly=$(date -u '+%Y%m%d');
+#dateonly="20151019"
 datetime=$(date '+%Y-%m-%d.%H-%M-%S');
 
 mkdir -p ./${DATA_PATH}/${dateonly}
@@ -20,7 +21,6 @@ mkdir -p ./${DATA_PATH}/${dateonly}
 echo "** $datetime [ TC-DB-UPDATE ] : Copying new data files from S3"
 { 
   /usr/local/bin/aws s3 sync s3://twit-candi-2016/data/$dateonly/ $DATA_PATH/$dateonly/ --exclude '*.json' --exclude '*.py' > ./${LOG_PATH}/${datetime}-aws-sync 2>&1
-  
 } && {
   downloadok=`cat ./${LOG_PATH}/${datetime}-aws-sync | grep "download: " | wc -l | xargs`
   echo "** $datetime [ TC-DB-UPDATE ] : SUCCESS : $downloadok files downloaded from AWS, no errors."
@@ -30,8 +30,8 @@ echo "** $datetime [ TC-DB-UPDATE ] : Copying new data files from S3"
   echo "** $datetime [ TC-DB-UPDATE ] : ERROR : $downloadok files downloaded from AWS, $downloadbad errors."
 } 
 
-# this is date 25 mins ago - get everything after that
-cdate=`TZ='UTC+0:25' date`
+# this is date 16 mins ago - get everything after that
+cdate=`TZ='UTC+0:20' date`
 #cdate=`TZ='UTC+03:00' date` # this would be 3 hours ago
 newfiles=( `find ${DATA_PATH}/*/* -type f -newerct "${cdate}"` )
 
