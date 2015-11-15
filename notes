@@ -16,6 +16,7 @@ mongod --dbpath /Users/triciajam/Documents/Projects/twit-candi-ui/data
 
 aws s3 sync s3://twit-candi-2016/data data/ --exclude "*" --include "*201510*" --dryrun
 aws s3 sync s3://twit-candi-2016/data data/ --exclude "*" --include "*20151006*" --dryrun
+aws s3 sync s3://twit-candi-2016/data downlaod/ --exclude "*" --include "*20151111*" --dryrun
 
 NOTE: du -sh "folder" - S is summary, H is human readbable
 
@@ -298,7 +299,7 @@ b=db.tweets.aggregate([
   {"$sort": { "count" : -1 } }
 ])
 
-# this counts tweets by hour and puts all tags in that hour into an array
+# this counts tweets by hour and puts all tags in that hour into an
 c=db.tweets.aggregate([
   { $match: { 
     tc_cat: "mentions"

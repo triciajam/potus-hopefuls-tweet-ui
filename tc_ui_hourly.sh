@@ -13,8 +13,9 @@ cd /Users/triciajam/Documents/Projects/twit-candi-ui
 
 # date in UTC - this is folder in AWS
 dateonly=$(date -u '+%Y%m%d');
-#dateonly="20151019"
 datetime=$(date '+%Y-%m-%d.%H-%M-%S');
+timestart=`date`;
+#aws s3 sync s3://twit-candi-2016/data downlaod/ --exclude "*" --include "*20151111*" --dryrun
 
 mkdir -p ./${DATA_PATH}/${dateonly}
 
@@ -30,10 +31,9 @@ echo "** $datetime [ TC-DB-UPDATE ] : Copying new data files from S3"
   echo "** $datetime [ TC-DB-UPDATE ] : ERROR : $downloadok files downloaded from AWS, $downloadbad errors."
 } 
 
-# this is date 16 mins ago - get everything after that
-cdate=`TZ='UTC+0:20' date`
+#cdate=`TZ='UTC+0:20' date`
 #cdate=`TZ='UTC+03:00' date` # this would be 3 hours ago
-newfiles=( `find ${DATA_PATH}/*/* -type f -newerct "${cdate}"` )
+newfiles=( `find ${DATA_PATH}/*/* -type f -newerct "${timestart}"` )
 
 if [[ "${#newfiles[@]}" -ne 0 ]]; then
 
@@ -96,3 +96,6 @@ else
   echo "** $datetime [ TC-DB-UPDATE ] : There are zero (${#newfiles[@]}) new files on file system.  No files added to mongoDB."
 
 fi
+
+#timeend=`date`;
+#echo "$timeend" > lastdownloadtime
