@@ -244,14 +244,14 @@ function makeGraphs(error, tagsJson) {
       var tagchart = dc.rowChart("#tag-chart");
       tagchart      
           .width(170)
-          .height(450)
+          .height(500)
           .margins({top: 5, right: 5, bottom: 20, left: 5})
           .renderLabel(true)
           .dimension(tagsDim)
           .group(tagsGroup)
           .turnOnControls(false)
           .elasticX(true)
-          .cap(25)
+          .cap(30)
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
