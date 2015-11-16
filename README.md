@@ -6,4 +6,5 @@ and ultimately to relate that to other variables, particularly public opinion po
 
 Tweets that have been collected are retrieved from Amazon S3 at some interval (currently hourly), stored locally in a MongoDB, 
 and displayed using Crossfilter.js.  Visualization code is in static/js/graphs.js.
+
 Visualization is currently only running on local machine; hoping to be live using AWS shortly.   
