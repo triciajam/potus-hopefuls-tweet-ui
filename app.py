@@ -14,16 +14,6 @@ DBS_NAME = 'twit-candi'
 COLLECTION_NAME = 'tweets'
 FIELDS = {'text': True, 'tc_cand': True, 'tc_cat': True, 'tc_text': True, 'tc_date': True, 'created_at': True }
 
-
-tagsPipeline = [
-  {"$project": {
-    "entities.hashtags.text" : 1,
-    "tc_cand" : 1,
-    "created_at2" : 1
-  }},
-  {"$unwind": "$entities.hashtags"} 
-]
-
 hourly = [  { "$match": { 
                 "tc_cat" : "mentions"
             }},
