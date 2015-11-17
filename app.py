@@ -8,12 +8,20 @@ from bson.son import SON
 
 app = Flask(__name__)
 
+# MongoDB Config
+
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 DBS_NAME = 'twit-candi'
 COLLECTION_NAME = 'tweets'
+
+# Queries for the MongoDB Pipeline
+# Using MongoDB Pipeline to aggregate tweets
+
+# just returns everything - for testing
 FIELDS = {'text': True, 'tc_cand': True, 'tc_cat': True, 'tc_text': True, 'tc_date': True, 'created_at': True }
 
+# count of twitter mentions by candidate by hour
 hourly = [  { "$match": { 
                 "tc_cat" : "mentions"
             }},
@@ -28,7 +36,8 @@ hourly = [  { "$match": {
                 "count": { "$sum" : 1 }
             }}
          ]
-           
+
+# count of twitter mentions by candidate by hour, including all hashtags used
 hourlyWithHashTags = [  { "$match": { 
                               "tc_cat" : "mentions"
                         }},
@@ -59,7 +68,7 @@ hourlyWithHashTags = [  { "$match": {
 def index():
     return render_template("index.html")
 
-@app.route("/twit-candi/tw")
+@app.route("/twit-candi/test")
 def donorschoose_projects():
     connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
     collection = connection[DBS_NAME][COLLECTION_NAME]
