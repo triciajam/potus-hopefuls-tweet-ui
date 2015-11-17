@@ -376,3 +376,61 @@ pipeline = [ {"$unwind": "$tags"},
     
 http://api.mongodb.org/python/current/examples/aggregation.html  
 find /path/to/files* -mtime +5 -exec rm {} \;
+
+
+For setting up apache and FLask on ubuntu
+http://www.datasciencebytes.com/bytes/2015/02/24/running-a-flask-app-on-aws-ec2/
+the above modifies this : http://docs.aws.amazon.com/gettingstarted/latest/wah-linux/getting-started-deploy-app.html
+
+1) Install 
+$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo apt-get install libapache2-mod-wsgi
+$ sudo apt-get install python-pip
+$ sudo pip install flask
+$ mkdir ~/flaskapp
+$ sudo ln -sT ~/flaskapp /var/www/html/flaskapp
+$ cd ~/flaskapp
+
+2) Create flaskapp.py
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+  return 'Hello from Flask!'
+
+if __name__ == '__main__':
+  app.run()
+  
+3) Create flaskapp.wsgi
+import sys
+sys.path.insert(0, '/var/www/html/flaskapp')
+
+from flaskapp import app as application
+
+4) Enable mod_wsgi in /etc/apache2/sites-enabled/000-default.conf, add the following block just after the DocumentRoot /var/www/html
+WSGIDaemonProcess flaskapp threads=5
+WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
+
+<Directory flaskapp>
+    WSGIProcessGroup flaskapp
+    WSGIApplicationGroup %{GLOBAL}
+    Order deny,allow
+    Allow from all
+</Directory>
+
+5) Restart
+$ sudo apachectl restart
+
+6) Git
+sudo apt-get install git
+
+7) Mongo DB
+https://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+sudo service mongod start
+cat /var/log/mongodb/mongod.log
