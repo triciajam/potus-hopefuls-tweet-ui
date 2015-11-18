@@ -387,7 +387,10 @@ $ sudo apt-get update
 $ sudo apt-get install apache2
 $ sudo apt-get install libapache2-mod-wsgi
 $ sudo apt-get install python-pip
+sudo apt-get install build-essential python-dev # pymongo
 $ sudo pip install flask
+
+
 $ mkdir ~/flaskapp
 $ sudo ln -sT ~/flaskapp /var/www/html/flaskapp
 $ cd ~/flaskapp
@@ -426,6 +429,9 @@ $ sudo apachectl restart
 6) Git
 sudo apt-get install git
 
+6a) AWAS
+sudo apt-get install awscli
+
 7) Mongo DB
 https://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
@@ -434,3 +440,20 @@ sudo apt-get update
 sudo apt-get install -y mongodb-org
 sudo service mongod start
 cat /var/log/mongodb/mongod.log
+
+Help: EBS dvcieds and setting up mongo with file system
+http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
+https://docs.mongodb.org/ecosystem/platforms/amazon-ec2/
+
+lsblk
+sudo mkdir ~/db
+sudo mount /dev/xvdf ~/db
+cd db
+mkdir data log
+sudo chown mongod:mongod ~/db
+cat /etc/mongod.conf - edit to show proper dbpath and log /home/ubuntu/db/data
+
+df -Th
+
+sudo service mongod start
+
