@@ -9,7 +9,7 @@ echo ">> $datetime [ TC-DB-UPDATE ] : *****************************************"
 echo ">> $datetime [ TC-DB-UPDATE ] : Starting Update"
 echo ">> $datetime [ TC-DB-UPDATE ] : *****************************************"
 
-cd /Users/triciajam/Documents/Projects/twit-candi-ui
+cd /home/ubuntu/pres2016
 
 # date in UTC - this is folder in AWS
 dateonly=$(date -u '+%Y%m%d');
