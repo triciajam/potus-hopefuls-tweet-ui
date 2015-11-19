@@ -445,6 +445,8 @@ Help: EBS dvcieds and setting up mongo with file system
 http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html
 https://docs.mongodb.org/ecosystem/platforms/amazon-ec2/
 
+GOOD: Running flask on ec2 http://www.datasciencebytes.com/bytes/2015/02/24/running-a-flask-app-on-aws-ec2/
+
 lsblk
 sudo mkdir ~/db
 sudo mount /dev/xvdf ~/db
@@ -453,7 +455,26 @@ mkdir data log
 sudo chown mongod:mongod ~/db
 cat /etc/mongod.conf - edit to show proper dbpath and log /home/ubuntu/db/data
 
+lsblk
 df -Th
 
 sudo service mongod start
 
+$ sudo nano /etc/security/limits.conf
+* soft nofile 64000
+* hard nofile 64000
+* soft nproc 32000
+* hard nproc 32000
+
+$ sudo nano /etc/security/limits.d/90-nproc.conf
+* soft nproc 32000
+* hard nproc 32000
+
+sudo blockdev --setra 32 /dev/xvdf
+
+8) Fix crontab
+30 */1 * * * /home/ubuntu/pres2016/tc_ui_hourly.sh >> /home/ubuntu/pres2016/log/update 2>&
+
+9) Install mail stuff
+post-fix
+mail
