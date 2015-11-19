@@ -22,7 +22,7 @@ mkdir -p ./${DATA_PATH}/${dateonly}
 echo "** $datetime [ TC-DB-UPDATE ] : Copying new data files from S3"
 { 
   #/usr/local/bin/
-  aws s3 sync s3://twit-candi-2016/data/$dateonly/ $DATA_PATH/$dateonly/ --exclude '*.json' --exclude '*.py' > ./${LOG_PATH}/${datetime}-aws-sync 2>&1
+  aws s3 sync s3://twit-candi-2016/data/$dateonly/ $DATA_PATH/$dateonly/ --exclude '*.json' --exclude '*.py' --region us-east-1 > ./${LOG_PATH}/${datetime}-aws-sync 2>&1
 } && {
   downloadok=`cat ./${LOG_PATH}/${datetime}-aws-sync | grep "download: " | wc -l | xargs`
   echo "** $datetime [ TC-DB-UPDATE ] : SUCCESS : $downloadok files downloaded from AWS, no errors."
