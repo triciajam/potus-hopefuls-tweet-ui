@@ -107,7 +107,7 @@ function makeGraphs(error, tagsJson) {
   	timeChart
   		.width(1000)
   		.height(100)
-  		.margins({top: 0, right: 10, bottom: 35, left: 37})
+  		.margins({top: 0, right: 10, bottom: 35, left: 22})
   		.dimension(timeDim)
   		.group(numTweetsByTime)
   		.transitionDuration(500)
@@ -118,19 +118,19 @@ function makeGraphs(error, tagsJson) {
   		.xAxisLabel("Time")
   		//.tickFormat(function(d) {return tformat; })
   		.yAxisLabel("")
-  		.yAxis().ticks(2);
+  		.yAxis().ticks(0);
 
     // Shows tweets over time broken down by candidate
     // mouse over candidate name to highlight line
   	  
     timeCandChart
       .width(1000)
-      //.height(250)
-      .margins({top: 10, right: 10, bottom: 20, left: 37})
+      .height(350)
+      .margins({top: 10, right: 10, bottom: 20, left: 22})
       .chart(function(c) { return dc.lineChart(c); })
   		.x(d3.time.scale().domain([minDate, maxDate]))
       .brushOn(false)
-      .yAxisLabel("Tweets in 12-min Interval")
+      .yAxisLabel("")
       .xAxisLabel("")
       //.clipPadding(10)
       .elasticY(true)//
@@ -148,7 +148,7 @@ function makeGraphs(error, tagsJson) {
       //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
       // horizontal legend four items across: 4x70=280
       //.legend(dc.legend().x(150).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
-      .legend(dc.legend().x(100).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(900).itemWidth(70));
+      .legend(dc.legend().x(50).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(900).itemWidth(70));
       //timeCandChart.yAxis().ticks(d3.time.hour(3));
       //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
       //chart.margins().left += 40;
@@ -159,7 +159,7 @@ function makeGraphs(error, tagsJson) {
       candChart  
           .width(170)
           .height(450)
-          .margins({top: 5, right: 5, bottom: 20, left: 5})
+          .margins({top: 5, right: 5, bottom: 20, left: 3})
           .dimension(candDim)
           .group(numTweetsByCand)
           .gap(2)
