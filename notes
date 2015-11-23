@@ -422,6 +422,8 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
     Order deny,allow
     Allow from all
 </Directory>
+aws s3 cp /etc/apache2/sites-enabled/000-default.conf s3://twit-candi-ui/dist/ --region us-east-
+aws s3 cp tc_ui_cron s3://twit-candi-ui/dist/ --region us-east-1
 
 5) Restart
 $ sudo apachectl restart
@@ -457,6 +459,7 @@ cat /etc/mongod.conf - edit to show proper dbpath and log /home/ubuntu/db/data
 
 lsblk
 df -Th
+du -sh ~/db/*
 
 sudo service mongod start
 
@@ -471,6 +474,14 @@ $ sudo nano /etc/security/limits.d/90-nproc.conf
 * hard nproc 32000
 
 sudo blockdev --setra 32 /dev/xvdf
+
+WARNING: /sys/kernel/mm/transparent_hugepage/enabled is 'always'.
+2015-11-18T03:57:20.799+0000 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2015-11-18T03:57:20.799+0000 I CONTROL  [initandlisten] 
+2015-11-18T03:57:20.799+0000 I CONTROL  [initandlisten] ** WARNING: /sys/kernel/mm/transparent_hugepage/defrag is 'always'.
+2015-11-18T03:57:20.799+0000 I CONTROL  [initandlisten] **        We suggest setting it to 'never'
+2015-11-18T03:57:20.799+0000 I CONTROL  [initandlisten] 
+
 
 8) Fix crontab
 30 */1 * * * /home/ubuntu/pres2016/tc_ui_hourly.sh >> /home/ubuntu/pres2016/log/update 2>&
