@@ -13,11 +13,14 @@ cd /home/ubuntu/pres2016
 
 # date in UTC - this is folder in AWS
 #dateonly=$(date -u '+%Y%m%d');
-datetime=$(date '+%Y-%m-%d::%H-%M-%S');
+datetime=$(date '+%Y-%m-%d.%H-%M-%S');
 timestart=`date`;
 #aws s3 sync s3://twit-candi-2016/data download/ --exclude "*" --include "*20151117*" --region us-east-1
 
-daysago=10
+mkdir -p ${DATA_PATH}
+mkdir -p ${LOG_PATH}
+
+daysago=3
 for d in $( seq 0 $daysago); do
   dateonly=$(date --date="$d day ago" -u '+%Y%m%d');
   mkdir -p ./${DATA_PATH}/${dateonly}
@@ -25,7 +28,7 @@ for d in $( seq 0 $daysago); do
   echo "** $datetime [ TC-DB-INIT ] : Copying new data files from S3 for $dateonly "
   { 
     #/usr/local/bin/
-    aws s3 sync s3://twit-candi-2016/data/$dateonly/ $DATA_PATH/$dateonly/ --exclude '*.json' --exclude '*.py' > ./${LOG_PATH}/${datetime}-aws-sync 2>&1
+    aws s3 sync s3://twit-candi-2016/data/$dateonly/ $DATA_PATH/$dateonly/ --exclude '*.json' --exclude '*.py' --region us-east-1 > ./${LOG_PATH}/${datetime}-aws-sync 2>&1
   } && {
     downloadok=`cat ./${LOG_PATH}/${datetime}-aws-sync | grep "download: " | wc -l | xargs`
     echo "** $datetime [ TC-DB-INIT ] : SUCCESS : $downloadok files downloaded from AWS, no errors."

@@ -454,7 +454,7 @@ sudo mkdir ~/db
 sudo mount /dev/xvdf ~/db
 cd db
 mkdir data log
-sudo chown mongod:mongod ~/db
+sudo chown -R mongodb:mongodb ~/db
 cat /etc/mongod.conf - edit to show proper dbpath and log /home/ubuntu/db/data
 
 lsblk
