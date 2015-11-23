@@ -93,6 +93,7 @@ function makeGraphs(error, tagsJson) {
   	var minDate = timeDim.bottom(1)[0]["time"];
   	var maxDate = timeDim.top(1)[0]["time"];
     
+    var timeGroup = timeDim.group();
 
     // ****************************************************************************
     // Draw Charts
@@ -169,6 +170,13 @@ function makeGraphs(error, tagsJson) {
           .turnOnControls(true)
           .xAxis().ticks(4);
   
+
+      var minsCount = dc.dataCount('#mins-count');
+      minsCount.group({ value: function() {
+          return timeGroup.all().filter(function(kv) { return kv.value>0; }).length;
+      } } );    
+      minsCount.dimension(timeGroup);
+
   
       // Shows total number of tweets currently selected by filter.
       
