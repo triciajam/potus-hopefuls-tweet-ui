@@ -105,7 +105,7 @@ function makeGraphs(error, tagsJson) {
   	// Can filter time using selction handles.
   	
   	timeChart
-  		.width(770)
+  		.width(1000)
   		.height(100)
   		.margins({top: 0, right: 10, bottom: 35, left: 37})
   		.dimension(timeDim)
@@ -124,8 +124,8 @@ function makeGraphs(error, tagsJson) {
     // mouse over candidate name to highlight line
   	  
     timeCandChart
-      .width(770)
-      .height(250)
+      .width(1000)
+      //.height(250)
       .margins({top: 10, right: 10, bottom: 20, left: 37})
       .chart(function(c) { return dc.lineChart(c); })
   		.x(d3.time.scale().domain([minDate, maxDate]))
@@ -147,7 +147,8 @@ function makeGraphs(error, tagsJson) {
       .valueAccessor(function(d) {return +d.value;})
       //.xAxis().tickFormat(function(d) { return d3.time.format("%Y-%m-%d"); });
       // horizontal legend four items across: 4x70=280
-      .legend(dc.legend().x(150).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
+      //.legend(dc.legend().x(150).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(500).itemWidth(70));
+      .legend(dc.legend().x(100).y(20).itemHeight(13).gap(5).horizontal(1).legendWidth(900).itemWidth(70));
       //timeCandChart.yAxis().ticks(d3.time.hour(3));
       //chart.yAxis().tickFormat(function(d) {return d3.format(',d')(d+299500);});
       //chart.margins().left += 40;
