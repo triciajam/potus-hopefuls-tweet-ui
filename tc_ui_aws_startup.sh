@@ -17,6 +17,7 @@ sudo pip install pymongo
 mkdir ~/pres2016
 sudo ln -sT ~/pres2016 /var/www/html/pres2016
 
+cd ~
 aws s3 cp s3://twit-candi-ui/dist/000-default.conf .  --region us-east-1
 sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.orig 
 sudo unlink /etc/apache2/sites-available/000-default.conf
