@@ -265,6 +265,7 @@ function makeGraphs(error, tagsJson) {
           .turnOnControls(false)
           .elasticX(true)
           .cap(30)
+          .othersGrouper(false)          
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
@@ -350,6 +351,7 @@ function makeGraphs(error, tagsJson) {
           .turnOnControls(false)
           .elasticX(true)
           .cap(30)
+          .othersGrouper(false)
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
