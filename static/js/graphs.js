@@ -126,7 +126,7 @@ function makeGraphs(error, tagsJson) {
   	  
     timeCandChart
       .width(1000)
-      .height(350)
+      //.height(350)
       .margins({top: 10, right: 10, bottom: 20, left: 22})
       .chart(function(c) { return dc.lineChart(c); })
   		.x(d3.time.scale().domain([minDate, maxDate]))
@@ -169,9 +169,8 @@ function makeGraphs(error, tagsJson) {
           .colors(colors)
           .turnOnControls(true)
           .xAxis().ticks(4);
-  
 
-      var minsCount = dc.dataCount('#mins-count');
+      var minsCount = dc.dataCount('.mins-count');
       minsCount.group({ value: function() {
           return timeGroup.all().filter(function(kv) { return kv.value>0; }).length;
       } } );    
