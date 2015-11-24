@@ -78,6 +78,7 @@ function makeGraphs(error, tagsJson) {
   	// Define Dimensions
   	var candDim = ndx.dimension(function(d) { return d["tc_cand"]; });
   	var timeDim = ndx.dimension(function(d) { return d["time"]; }); 
+  	var timeDim2 = ndx.dimension(function(d) { return d["time"]; }); 
   	var candTimeDim = ndx.dimension(function(d) {return [d.tc_cand, d.time]; });
   
   	// Calculate group sums
@@ -93,8 +94,8 @@ function makeGraphs(error, tagsJson) {
   	var minDate = timeDim.bottom(1)[0]["time"];
   	var maxDate = timeDim.top(1)[0]["time"];
     
-    	var timeGroup = timeDim.group();
-	console.log(timeGroup.all());
+    var timeGroup = timeDim2.group();
+	  console.log(timeGroup.all());
 	
     // ****************************************************************************
     // Draw Charts
@@ -127,7 +128,7 @@ function makeGraphs(error, tagsJson) {
   	  
     timeCandChart
       .width(1000)
-      //.height(350)
+      .height(400)
       .margins({top: 10, right: 10, bottom: 20, left: 22})
       .chart(function(c) { return dc.lineChart(c); })
   		.x(d3.time.scale().domain([minDate, maxDate]))
