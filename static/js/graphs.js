@@ -290,7 +290,7 @@ function makeGraphs(error, tagsJson) {
       // 2) override all() function
       // 3) override top() function -- because we only want to show top 20
       
-      function reduceAdd(p, v) {
+      function ureduceAdd(p, v) {
         if (v.users[0] === "") return p;    // skip empty values
         v.users.forEach (function(val, idx) {
           if (val != "all" && val != "top") {
@@ -299,7 +299,7 @@ function makeGraphs(error, tagsJson) {
         });
         return p;
       }
-      function reduceRemove(p, v) {
+      function ureduceRemove(p, v) {
         if (v.users[0] === "") return p;    // skip empty values
         v.users.forEach (function(val, idx) {
           if (val != "all" && val != "top") {
@@ -309,12 +309,12 @@ function makeGraphs(error, tagsJson) {
         return p;
          
       }
-      function reduceInitial() {
+      function ureduceInitial() {
         return {};  
       }
 
       var userDim = ndx.dimension(function(d){ return d.users;});
-      var userGroup = userDim.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+      var userGroup = userDim.groupAll().reduce(ureduceAdd, ureduceRemove, ureduceInitial).value();
       //console.log(tagsGroup);
       // hack to make dc.js charts work
       userGroup.all = function() {
