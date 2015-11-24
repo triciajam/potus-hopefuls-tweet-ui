@@ -161,7 +161,7 @@ function makeGraphs(error, tagsJson) {
     
       candChart  
           .width(170)
-          .height(450)
+          .height(400)
           .margins({top: 5, right: 5, bottom: 20, left: 3})
           .dimension(candDim)
           .group(numTweetsByCand)
@@ -281,6 +281,92 @@ function makeGraphs(error, tagsJson) {
                   });
           return filters; 
       });    
+
+      // Show totals for each User 
+      // this can be filtered by candidate and time
+      // Crossfilter does not naturally deal with a property that is an array
+      // so I need 
+      // 1) three custom reduce functions, using a map
+      // 2) override all() function
+      // 3) override top() function -- because we only want to show top 20
+      
+      function reduceAdd(p, v) {
+        if (v.users[0] === "") return p;    // skip empty values
+        v.users.forEach (function(val, idx) {
+          if (val != "all" && val != "top") {
+            p[val] = (p[val] || 0) + 1; //increment counts
+          }  
+        });
+        return p;
+      }
+      function reduceRemove(p, v) {
+        if (v.users[0] === "") return p;    // skip empty values
+        v.users.forEach (function(val, idx) {
+          if (val != "all" && val != "top") {
+            p[val] = (p[val] || 0) - 1; //decrement counts
+          }  
+        });
+        return p;
+         
+      }
+      function reduceInitial() {
+        return {};  
+      }
+
+      var userDim = ndx.dimension(function(d){ return d.users;});
+      var userGroup = userDim.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+      //console.log(tagsGroup);
+      // hack to make dc.js charts work
+      userGroup.all = function() {
+        var newObject = [];
+        for (var key in this) {
+          if (this.hasOwnProperty(key) && key != "all" && key != "top") {
+            newObject.push({
+              key: key,
+              value: this[key]
+            });
+          }
+        }
+        return newObject;
+      };
+      userGroup.top = function(count) {
+          //console.log(this);
+          var newObject = this.all();
+          //console.log(newObject);
+          newObject.sort(function(a, b){return b.value - a.value});
+          //console.log(newObject.slice(0, count));
+          return newObject.slice(0, count);
+          //return null;
+      };
+      
+      var userchart = dc.rowChart("#user-chart");
+      userchart      
+          .width(170)
+          .height(500)
+          .margins({top: 5, right: 5, bottom: 20, left: 5})
+          .renderLabel(true)
+          .dimension(tagsDim)
+          .group(tagsGroup)
+          .turnOnControls(false)
+          .elasticX(true)
+          .cap(30)
+          .ordering(function(d) { return -d.value; })
+          .xAxis().ticks(4);
+          
+      userchart.filterHandler (function (dimension, filters) {
+             dimension.filter(null);   
+              if (filters.length === 0)
+                  dimension.filter(null);
+              else
+                  dimension.filterFunction(function (d) {
+                      for (var i=0; i < d.length; i++) {
+                          if (filters.indexOf(d[i]) >= 0) return true;
+                      }
+                      return false;
+                  });
+          return filters; 
+      });    
+
 
       dc.renderAll();
       //dc.renderAll("owngroup");
