@@ -29,7 +29,7 @@
           <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Tweets with Mentions <span><a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a></span>
+                Total Mentions <span><a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a></span>
               </div>
               <div class="chart-stage">
                 <div id="number-chart">
@@ -45,12 +45,14 @@
           <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Minutes Collected
+                Collection Time
               </div>
               <div class="chart-stage">
                 <div class='mins-count'>
-                 <span class='filter-count'></span>
+                 <span class='filter-count'></span> minutes.
+                 <!--
                  / <span class='total-count'></span> minutes.
+                 -->
                 </div>
               </div>
               <div class="chart-notes">
@@ -68,7 +70,7 @@
 
             <div class="chart-wrapper">
               <div class="chart-title">
-                Totals By Candidates
+                Mentions by Candidate
               </div>
               <div class="chart-stage">
                 <div id="cand-chart">
@@ -78,7 +80,7 @@
                 </div>
               </div>
  	          <div class="chart-notes">
-		          Click on candidate name to see individual series.
+		          Click on candidate name for individual series.
             </div>
             </div>
 
@@ -89,7 +91,7 @@
       <div class="col-sm-10">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Number of Tweets Collected for 12 Minutes Each Hour
+            Number of Mentions in 12 Minutes
           </div>
           <div class="chart-stage">
             <div id="cand-series-chart">
@@ -101,9 +103,9 @@
             </div>
           </div>
           <div class="chart-notes">
-            Each point is equal to the total number of tweets that mentioned the given candidate during 12 minutes of the hour.
-	          Tweets are sampled from minute 5 to 16 inclusive of every hour. Roll over candidate name to highlight individual series.   
-            <br>This captures candidate "mentions" as opposed to mentions of official campaign account only.
+            Each point is the total number of tweets that mention the given candidate during 12 minutes of the hour.
+	          Tweets are sampled from minute 5 to 16 inclusive. Roll over candidate name to highlight individual series.   
+            These numbers capture a wider class og candidate "mentions" than mentions of official campaign account only.
           </div>
         </div>
       </div>
@@ -123,7 +125,7 @@
             </div>
           </div>
           <div class="chart-notes">
-            Top 30 hashtags used in tweets that mention candidates.
+            Top 30 hashtags used with candidate mentions.
           </div>
         </div>
       </div>
@@ -138,7 +140,7 @@
             </div>
           </div>
           <div class="chart-notes">
-            Top 30 users who post tweets.
+            Top 30 users generating candidate mentions.
           </div>
         </div>
       </div>
