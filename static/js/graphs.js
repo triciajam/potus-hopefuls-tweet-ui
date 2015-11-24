@@ -93,8 +93,9 @@ function makeGraphs(error, tagsJson) {
   	var minDate = timeDim.bottom(1)[0]["time"];
   	var maxDate = timeDim.top(1)[0]["time"];
     
-    var timeGroup = timeDim.group();
-
+    	var timeGroup = timeDim.group();
+	console.log(timeGroup.all());
+	
     // ****************************************************************************
     // Draw Charts
   	
