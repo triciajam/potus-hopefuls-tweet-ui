@@ -29,7 +29,7 @@
           <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Tweets Collected <span><a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a></span>
+                Tweets with Mentions <span><a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a></span>
               </div>
               <div class="chart-stage">
                 <div id="number-chart">
@@ -45,7 +45,7 @@
           <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Tweet Collection Time
+                Minutes Collected
               </div>
               <div class="chart-stage">
                 <div class='mins-count'>
@@ -54,7 +54,7 @@
                 </div>
               </div>
               <div class="chart-notes">
-	      Click and drag on bottom graph to filter by time.		
+	               Click and drag on bottom graph to filter by time.		
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@
 
             <div class="chart-wrapper">
               <div class="chart-title">
-                Filter By Candidate
+                Totals By Candidates
               </div>
               <div class="chart-stage">
                 <div id="cand-chart">
@@ -77,9 +77,9 @@
                   </span>
                 </div>
               </div>
- 	      <div class="chart-notes">
-		
-              </div>
+ 	          <div class="chart-notes">
+		          Click on candidate name to see individual series.
+            </div>
             </div>
 
 
@@ -101,10 +101,8 @@
             </div>
           </div>
           <div class="chart-notes">
-            Each point corresponds to an hour and a candidate, with value equal to the total number of tweets that mentioned the given candidate 
-		during 12 minutes of that hour.
-	    Tweets are sampled from minute 5 to 16 inclusive. 
-            Roll over candidate name to highlight individual series.   
+            Each point is equal to the total number of tweets that mentioned the given candidate during 12 minutes of the hour.
+	          Tweets are sampled from minute 5 to 16 inclusive of every hour. Roll over candidate name to highlight individual series.   
             <br>This captures candidate "mentions" as opposed to mentions of official campaign account only.
           </div>
         </div>
@@ -125,7 +123,7 @@
             </div>
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            Top 30 hashtags used in tweets that mention candidates.
           </div>
         </div>
       </div>
@@ -140,7 +138,7 @@
             </div>
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            Top 30 users who post tweets.
           </div>
         </div>
       </div>

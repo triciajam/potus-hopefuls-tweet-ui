@@ -265,7 +265,8 @@ function makeGraphs(error, tagsJson) {
           .turnOnControls(false)
           .elasticX(true)
           .cap(30)
-          .othersGrouper(false)          
+          .othersGrouper(false)
+          .colorAccessor(function(d) { return "gray"; })
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
@@ -352,6 +353,7 @@ function makeGraphs(error, tagsJson) {
           .elasticX(true)
           .cap(30)
           .othersGrouper(false)
+          .colorAccessor(function(d) { return "gray"; })
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
