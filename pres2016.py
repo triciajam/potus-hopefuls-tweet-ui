@@ -43,11 +43,13 @@ hourlyWithHashTags = [  { "$match": {
                         }},
                         {"$project": {
                           "entities.hashtags.text" : 1,
+                          "user.screen_name" : 1,
                           "tc_cand" : 1,
                           "created_at2" : 1
                         }},
                         {"$project": {
                           "tags" : "$entities.hashtags.text",
+                          "users" : "$user.screen_name",
                           "tc_cand" : 1,
                           "created_at2" : 1
                         }},
@@ -60,7 +62,8 @@ hourlyWithHashTags = [  { "$match": {
                               "tc_cand"  :  "$tc_cand"
                               },
                             "count" : { "$sum" : 1 },
-                            "tags" : { "$push" : "$tags" }
+                            "tags" : { "$push" : "$tags" },
+                            "users" : { "$push" : "$users" }
                         }}
                     ]
 
