@@ -174,10 +174,12 @@ function makeGraphs(error, tagsJson) {
 
       var minsCount = dc.dataCount('.mins-count');
       minsCount.group({ value: function() {
-          return timeGroup.all().filter(function(kv) { return kv.value>0; }).length;
+          return timeGroup.all().filter(function(kv) { return kv.value>0; }).length * 12;
       } } );    
-      minsCount.dimension(timeGroup);
-
+      //minsCount.dimension(timeGroup);
+      minsCount.dimension({ size: function() {
+          return timeGroup.size() * 12;
+      } } );    
   
       // Shows total number of tweets currently selected by filter.
       
