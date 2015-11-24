@@ -172,12 +172,15 @@ function makeGraphs(error, tagsJson) {
           .turnOnControls(true)
           .xAxis().ticks(4);
 
+      // http://stackoverflow.com/questions/30099139/datacount-graph-filtered-by-a-dimension
       var minsCount = dc.dataCount('.mins-count');
       minsCount.group({ value: function() {
           return timeGroup.all().filter(function(kv) { return kv.value>0; }).length;
       } } );    
-      minsCount.dimension(timeGroup);
-
+      //minsCount.dimension(timeGroup);
+      minsCount.dimension({ size: function() {
+          return timeGroup.size() * 12;
+      } } );    
   
       // Shows total number of tweets currently selected by filter.
       
