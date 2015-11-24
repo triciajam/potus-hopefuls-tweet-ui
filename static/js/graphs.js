@@ -175,7 +175,7 @@ function makeGraphs(error, tagsJson) {
       // http://stackoverflow.com/questions/30099139/datacount-graph-filtered-by-a-dimension
       var minsCount = dc.dataCount('.mins-count');
       minsCount.group({ value: function() {
-          return timeGroup.all().filter(function(kv) { return kv.value>0; }).length;
+          return timeGroup.all().filter(function(kv) { return kv.value>0; }).length * 12;
       } } );    
       //minsCount.dimension(timeGroup);
       minsCount.dimension({ size: function() {

@@ -45,13 +45,16 @@
           <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Minutes
+                Tweet Collection Time
               </div>
               <div class="chart-stage">
                 <div class='mins-count'>
                  <span class='filter-count'></span>
-                 selected out of <span class='total-count'></span> minutes.
+                 / <span class='total-count'></span> minutes.
                 </div>
+              </div>
+              <div class="chart-notes">
+	      Click and drag on bottom graph to filter by time.		
               </div>
             </div>
           </div>
@@ -74,6 +77,9 @@
                   </span>
                 </div>
               </div>
+ 	      <div class="chart-notes">
+		
+              </div>
             </div>
 
 
@@ -95,10 +101,10 @@
             </div>
           </div>
           <div class="chart-notes">
-            Each point corresponds to an hour and a candidate.  Its value is value is the total number of tweets that mentioned the given candidate 
-		during 12 minutes of the given hour.
+            Each point corresponds to an hour and a candidate, with value equal to the total number of tweets that mentioned the given candidate 
+		during 12 minutes of that hour.
 	    Tweets are sampled from minute 5 to 16 inclusive. 
-            <br>Click and drag on bottom chart to filter by time.  Roll over candidate name to highlight individual series.   
+            Roll over candidate name to highlight individual series.   
             <br>This captures candidate "mentions" as opposed to mentions of official campaign account only.
           </div>
         </div>
@@ -124,6 +130,7 @@
         </div>
       </div>
 
+<!--
 
       <div class="col-sm-4">
         <div class="chart-wrapper">
@@ -140,7 +147,7 @@
       </div>
       
     </div>   
-<!--      
+      
       <div class="col-sm-4">
         <div class="chart-wrapper">
           <div class="chart-title">
