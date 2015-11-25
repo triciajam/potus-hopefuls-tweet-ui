@@ -266,7 +266,8 @@ function makeGraphs(error, tagsJson) {
           .elasticX(true)
           .cap(30)
           .othersGrouper(false)
-          .colorAccessor(function(d) { return "#D3D3D3"; })
+          .colors(d3.scale.ordinal().domain(["gray"]).range(["#D3D3D3"]))
+          .colorAccessor(function(d) { return "gray"; })
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
@@ -353,7 +354,8 @@ function makeGraphs(error, tagsJson) {
           .elasticX(true)
           .cap(30)
           .othersGrouper(false)
-          .colorAccessor(function(d) { return "#D3D3D3"; })
+          .colors(d3.scale.ordinal().domain(["gray"]).range(["#D3D3D3"]))
+          .colorAccessor(function(d) { return "gray"; })
           .ordering(function(d) { return -d.value; })
           .xAxis().ticks(4);
           
