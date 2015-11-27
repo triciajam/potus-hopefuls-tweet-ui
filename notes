@@ -491,3 +491,7 @@ post-fix
 mail
 
 # http://stackoverflow.com/questions/30099139/datacount-graph-filtered-by-a-dimension
+
+
+cat log/crlog | grep -B 1 -A 1 "No such""
+http://www.datasciencebytes.com/bytes/2015/02/24/running-a-flask-app-on-aws-ec2/
