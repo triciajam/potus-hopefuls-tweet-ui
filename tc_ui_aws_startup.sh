@@ -1,27 +1,27 @@
 #sudo apt-get update
-#sudo apt-get install awscli
-#cat /var/log/apache2/error.log
+#sudo apt-get install git
+#git clone https://github.com/triciajam/twit-candi-ui.git pres2016/
 
 sudo apt-get install apache2
 sudo apt-get install libapache2-mod-wsgi
 sudo apt-get install python-pip
 sudo apt-get install build-essential python-dev
+#cat /var/log/apache2/error.log
 
-sudo apt-get install git
 sudo apt-get install postfix
 sudo apt-get install mailutils
 
 sudo pip install flask
 sudo pip install pymongo
+sudo apt-get install awscli
 
 mkdir ~/pres2016
 sudo ln -sT ~/pres2016 /var/www/html/pres2016
 
 cd ~
-aws s3 cp s3://twit-candi-ui/dist/000-default.conf .  --region us-east-1
 sudo mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/000-default.conf.orig 
 sudo unlink /etc/apache2/sites-available/000-default.conf
-sudo cp 000-default.conf /etc/apache2/sites-enabled/000-default.conf
+sudo cp dist/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 sudo ln -s /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 sudo apachectl restart
@@ -52,17 +52,13 @@ echo "* hard nproc 32000" | sudo tee --append /etc/security/limits.d/90-nproc.co
 sudo blockdev --setra 32 /dev/xvdf
 
 cd ~
-aws s3 cp s3://twit-candi-ui/dist/tc_ui_mongod.conf . --region us-east-1
 sudo mv /etc/mongod.conf /etc/mongod.conf.orig
-sudo cp tc_ui_mongod.conf /etc/mongod.conf
+sudo cp dist/tc_ui_mongod.conf /etc/mongod.conf
 
 sudo service mongod stop
 sudo service mongod start
 
-git clone https://github.com/triciajam/twit-candi-ui.git pres2016/
-
-aws s3 cp s3://twit-candi-ui/dist/tc_ui_db_init.sh . --region us-east-1
-
+. dist/tc_ui_db_init.sh
 
 aws s3 cp s3://twit-candi-ui/dist/tc_ui_cron . --region us-east-1
 crontab tc_ui_cron

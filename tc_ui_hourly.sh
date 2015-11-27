@@ -13,7 +13,7 @@ cd /home/ubuntu/pres2016
 
 # date in UTC - this is folder in AWS
 dateonly=$(date -u '+%Y%m%d');
-datetime=$(date '+%Y-%m-%d.%H-%M-%S');
+datetime=$(date -u '+%Y-%m-%d.%H-%M-%S');
 timestart=`date`;
 #aws s3 sync s3://twit-candi-2016/data download/ --exclude "*" --include "*20151117*" --region us-east-1
 
