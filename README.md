@@ -1,5 +1,7 @@
 # twit-candi-ui
 
+Web application to visualize mentions of 2016 Presidential primary candidates on Twitter.  This ["project"](https://github.com/triciajam/twit-candi-2016) collects the twitter mentions and stores them in Amazon S3.
+
 Work in progress.  User interface for twit-candi-2016 tweet ["ingestor"](https://github.com/triciajam/twit-candi-2016).
 Goal is to create a visualization for exploring how 2016 Presidential candidates are mentioned on twitter, 
 and ultimately to relate that to other variables, particularly public opinion polls. 
