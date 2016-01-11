@@ -1,6 +1,6 @@
 # potus-hopefuls-tweet-ui
 
-Web application to visualize mentions of 2016 Presidential primary candidates on Twitter.  [Potus-hopefuls-tweet-collector](https://github.com/triciajam/potus-hopefuls-tweet-collector) collects the twitter mentions and stores them in Amazon S3.
+Web application to visualize mentions of 2016 Presidential primary candidates on Twitter.  [Potus-hopefuls-tweet-collector](https://github.com/triciajam/potus-hopefuls-tweet-collector) collects the twitter mentions and stores them in Amazon S3; this retrieves and displays them.
 
 This application has two parts.
 
