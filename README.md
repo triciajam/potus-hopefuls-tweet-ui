@@ -1,12 +1,9 @@
-# twit-candi-ui
+# potus-hopefuls-tweet-ui
 
-Web application to visualize mentions of 2016 Presidential primary candidates on Twitter.  This ["project"](https://github.com/triciajam/twit-candi-2016) collects the twitter mentions and stores them in Amazon S3.
+Web application to visualize mentions of 2016 Presidential primary candidates on Twitter.  [Potus-hopefuls-tweet-collector](https://github.com/triciajam/potus-hopefuls-tweet-collector) collects the twitter mentions and stores them in Amazon S3.
 
-Work in progress.  User interface for twit-candi-2016 tweet ["ingestor"](https://github.com/triciajam/twit-candi-2016).
-Goal is to create a visualization for exploring how 2016 Presidential candidates are mentioned on twitter, 
-and ultimately to relate that to other variables, particularly public opinion polls. 
+This application has two parts.
 
-Tweets that have been collected are retrieved from Amazon S3 at some interval (currently hourly), stored locally in a MongoDB, 
-and displayed using Crossfilter.js.  Visualization code is in static/js/graphs.js.
+Backend is MongoDB database that is updated hourly via cron scripts with new tweets from Amazon S3 storage (by [potus-hopefuls-tweet-collector](https://github.com/triciajam/potus-hopefuls-tweet-collector)).  MongoDB makes aggregating and filtering tweets much easier than using files in S3.
 
-Visualization is currently only running on local machine; hoping to be live using AWS shortly.   
+Front end is written with Python/Flask.  The visualization uses D3, dc.js, and Crossfilter.
